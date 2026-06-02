@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        /* === ВСЕ СТИЛИ (те же, что были) === */
+        /* === СТИЛИ (те же, что были, без изменений) === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000000; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #ffffff; line-height: 1.5; }
         .app-wrapper { display: flex; min-height: 100vh; max-width: 1400px; margin: 0 auto; }
@@ -96,8 +96,7 @@
 <div id="paymentModal" class="modal"><div class="modal-content"><h3>Выберите способ оплаты</h3><div id="paymentModalButtons"></div><button id="closeModalBtn" style="margin-top:20px;">Закрыть</button></div></div>
 
 <script>
-    // ==================== FIREBASE КОНФИГУРАЦИЯ ====================
-    // ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА СВОИ ИЗ КОНСОЛИ FIREBASE!
+    // ==================== FIREBASE КОНФИГУРАЦИЯ (ВАШИ КЛЮЧИ) ====================
     const firebaseConfig = {
         apiKey: "AIzaSyCmq1ki8lMgYfRGIVxTpaZerG8fhlvOi6I",
         authDomain: "osclient-7d3a6.firebaseapp.com",
@@ -106,7 +105,6 @@
         messagingSenderId: "1016914638436",
         appId: "1:1016914638436:web:5f551d270bb621375f9171"
     };
-    // Инициализация Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -116,16 +114,18 @@
     const ticketsCollection = db.collection('osclient').doc('tickets');
     const licenseKeysCollection = db.collection('osclient').doc('licenseKeys');
 
-    // Переменные
     let currentUser = null;
     let pendingProduct = null;
     let newPaymentIconBase64 = null;
+    let settingsData = null;
+    let usersData = [];
+    let ticketsData = [];
+    let licenseKeysData = [];
 
-    // === Функции синхронизации с Firebase ===
+    // === Загрузка начальных данных и подписка на обновления в реальном времени ===
     async function loadSettings() {
         const doc = await settingsCollection.get();
         if (!doc.exists) {
-            // Инициализация по умолчанию
             const defaultSettings = {
                 products: [
                     { id:1, name:"OS Client PRO", price:499, days:30, desc:"Aimbot+ESP+Wallhack на 30 дней" },
@@ -200,12 +200,6 @@
         await licenseKeysCollection.update({ list: keysList });
     }
 
-    // Глобальные переменные для хранения данных
-    let settingsData = null;
-    let usersData = [];
-    let ticketsData = [];
-    let licenseKeysData = [];
-
     // === Функции обновления интерфейса ===
     function renderMain() {
         if (!settingsData) return;
@@ -275,7 +269,7 @@
             userDiv.innerHTML = `
                 <div class="card product-card"><div class="user-id-block"><span><strong>👤 Никнейм:</strong> ${escapeHtml(currentUser.login)}</span><span class="user-id-number"><strong>🆔 ID:</strong> ${userId}</span></div></div>
                 <div class="card"><h3>Статус подписки</h3>${subInfo}</div>
-                <div class="card"><h3>Активация ключа</h3><div class="inline-flex"><input type="text" id="activationKey" placeholder="Введите лицензионный ключ" style="flex:3"><button id="activateKeyBtn">Активировать ключ</button></div><div id="activationResult"></div></div>
+                <div class="card"><h3>Активация ключа</h3><div class="inline-flex"><input type="text" id="activationKey" placeholder="Введите лицензионный ключ (например, OS-XXXX-XXXX-XXXX)" style="flex:3"><button id="activateKeyBtn">Активировать ключ</button></div><div id="activationResult"></div></div>
                 <div class="card"><button id="logoutBtn">Выйти</button></div>
             `;
             document.getElementById('logoutBtn')?.addEventListener('click', () => logout());
@@ -339,18 +333,18 @@
         let tickets = ticketsData;
         let userTickets = tickets.filter(t => t.userLogin === currentUser.login);
         area.innerHTML = `<div class="card"><h3>Новое обращение</h3><input type="text" id="ticketTitle" placeholder="Тема"><textarea id="ticketMsg" rows="3" placeholder="Сообщение..."></textarea><button id="createTicketBtn">Отправить</button></div><div id="ticketsList"></div>`;
-        document.getElementById('ticketsList').innerHTML = userTickets.length? `<div class="card"><h3>Ваши обращения</h3>${userTickets.map(t=>`<div><b>${escapeHtml(t.title)}</b> (${t.date})<br>${escapeHtml(t.message)}<br><span>Ответ: ${t.answer||'ожидает'}</span></div>`).join('')}</div>`:'<div class="card">Нет обращений.</div>';
+        document.getElementById('ticketsList').innerHTML = userTickets.length? `<div class="card"><h3>Ваши обращения</h3>${userTickets.map(t=>`<div style="border-bottom:1px solid #333; padding:8px;"><b>${escapeHtml(t.title)}</b> (${t.date})<br>${escapeHtml(t.message)}<br><span style="color:#aaa;">Ответ: ${t.answer||'ожидает'}</span></div>`).join('')}</div>`:'<div class="card">Нет обращений.</div>';
         document.getElementById('createTicketBtn')?.addEventListener('click', async () => { let title=document.getElementById('ticketTitle').value, msg=document.getElementById('ticketMsg').value; if(!title||!msg){alert("Заполните поля");return;} let tickets = ticketsData; tickets.push({ id:Date.now(), userLogin:currentUser.login, title, message:msg, date:new Date().toLocaleString(), answer:null }); await saveTickets(tickets); ticketsData = tickets; renderTickets(); });
-        if(currentUser.role==='admin') { area.innerHTML += `<div class="card"><h3>Управление тикетами (админ)</h3><div id="adminTicketsList"></div></div>`; let all = ticketsData; document.getElementById('adminTicketsList').innerHTML = all.map((t,idx)=>`<div><b>${escapeHtml(t.title)}</b> от ${t.userLogin}<br>${escapeHtml(t.message)}<br><textarea id="ans_${idx}">${t.answer||''}</textarea><button class="answerTicket" data-idx="${idx}">Ответить</button></div>`).join(''); document.querySelectorAll('.answerTicket').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx), answer=document.getElementById(`ans_${idx}`).value; let tickets = ticketsData; if(tickets[idx]){ tickets[idx].answer=answer; await saveTickets(tickets); ticketsData = tickets; renderTickets(); } })); }
+        if(currentUser.role==='admin') { area.innerHTML += `<div class="card"><h3>Управление тикетами (админ)</h3><div id="adminTicketsList"></div></div>`; let all = ticketsData; document.getElementById('adminTicketsList').innerHTML = all.map((t,idx)=>`<div style="margin-bottom:10px; border:1px solid #333; padding:8px; border-radius:12px;"><b>${escapeHtml(t.title)}</b> от ${t.userLogin} (${t.date})<br>${escapeHtml(t.message)}<br><textarea id="ans_${idx}" rows="2">${t.answer||''}</textarea><button class="answerTicket" data-idx="${idx}">Ответить</button></div>`).join(''); document.querySelectorAll('.answerTicket').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx), answer=document.getElementById(`ans_${idx}`).value; let tickets = ticketsData; if(tickets[idx]){ tickets[idx].answer=answer; await saveTickets(tickets); ticketsData = tickets; renderTickets(); } })); }
     }
 
-    // Админские функции (сохранение в Firebase)
+    // Админские функции (с автоматическим сохранением в Firebase)
     let tempProducts = [];
     function loadTempProducts() { tempProducts = JSON.parse(JSON.stringify(settingsData.products || [])); renderAdminProductsTable(); }
-    function renderAdminProductsTable() { let html='<table><tr><th>Название</th><th>Цена</th><th>Дни</th><th></th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input id="temp_name_${idx}" value="${escapeHtml(p.name)}"></td><td><input id="temp_price_${idx}" value="${p.price}"></td><td><input id="temp_days_${idx}" value="${p.days}"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'</table>'; document.getElementById('adminProductsList').innerHTML = html; document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ tempProducts.splice(parseInt(btn.dataset.idx),1); renderAdminProductsTable(); })); }
+    function renderAdminProductsTable() { let html='<table style="width:100%"><tr><th>Название</th><th>Цена</th><th>Дни</th><th></th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input id="temp_name_${idx}" value="${escapeHtml(p.name)}"></td><td><input id="temp_price_${idx}" value="${p.price}"></td><td><input id="temp_days_${idx}" value="${p.days}"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'赶</table>'; document.getElementById('adminProductsList').innerHTML = html; document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ tempProducts.splice(parseInt(btn.dataset.idx),1); renderAdminProductsTable(); })); }
     async function saveAllProducts() { for(let i=0;i<tempProducts.length;i++){ let name=document.getElementById(`temp_name_${i}`)?.value, price=parseInt(document.getElementById(`temp_price_${i}`)?.value), days=parseInt(document.getElementById(`temp_days_${i}`)?.value); if(name && !isNaN(price) && !isNaN(days)){ tempProducts[i].name=name; tempProducts[i].price=price; tempProducts[i].days=days; tempProducts[i].desc=`${name} на ${days===9999?'∞':days+' дн.'}`; } } settingsData.products = tempProducts; await saveSettings({ products: settingsData.products }); renderShop(); }
     async function addProduct(n,p,d){ if(!n||isNaN(p)) return false; let newId = settingsData.products.length? Math.max(...settingsData.products.map(p=>p.id))+1 : 4; settingsData.products.push({ id:newId, name:n, price:parseInt(p), days:parseInt(d), desc:`${n} на ${parseInt(d)===9999?'∞':d+' дн.'}` }); await saveSettings({ products: settingsData.products }); loadTempProducts(); renderShop(); return true; }
-    async function renderKeysAdmin() { let keys = licenseKeysData; document.getElementById('keysList').innerHTML = keys.length? keys.map((k,idx)=>`<div class="key-list-item"><code>${escapeHtml(k.key)}</code> — ${k.days} дн. — ${k.used?`Использован ${k.usedBy} ${k.usedAt}`:'Не использован'}<button class="deleteKeyBtn" data-idx="${idx}">Удалить</button></div>`).join('') : '<p>Нет ключей</p>'; document.querySelectorAll('.deleteKeyBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); licenseKeysData.splice(idx,1); await saveLicenseKeys(licenseKeysData); renderKeysAdmin(); })); }
+    async function renderKeysAdmin() { let keys = licenseKeysData; document.getElementById('keysList').innerHTML = keys.length? keys.map((k,idx)=>`<div class="key-list-item"><code>${escapeHtml(k.key)}</code> — ${k.days} дн. — ${k.used?`Использован ${k.usedBy} ${k.usedAt}`:'Не использован'}<button class="deleteKeyBtn" data-idx="${idx}" style="background:#400;">Удалить</button></div>`).join('') : '<p>Нет сгенерированных ключей</p>'; document.querySelectorAll('.deleteKeyBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); licenseKeysData.splice(idx,1); await saveLicenseKeys(licenseKeysData); renderKeysAdmin(); })); }
     async function generateKey(days) { let key='OS-'+Math.random().toString(36).substring(2,6).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase(); licenseKeysData.push({ key, days, used:false, created:new Date().toISOString() }); await saveLicenseKeys(licenseKeysData); renderKeysAdmin(); return key; }
     async function renderAdminFeatures() { let feats = settingsData.featureBlocks || []; document.getElementById('adminFeaturesList').innerHTML = feats.map((f,idx)=>`<div class="card"><input id="edit_feat_name_${idx}" value="${escapeHtml(f.name)}"><input id="edit_feat_desc_${idx}" value="${escapeHtml(f.desc)}"><button class="saveFeatureBtn" data-idx="${idx}">Сохранить</button><button class="delFeatureBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveFeatureBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); settingsData.featureBlocks[idx].name = document.getElementById(`edit_feat_name_${idx}`).value; settingsData.featureBlocks[idx].desc = document.getElementById(`edit_feat_desc_${idx}`).value; await saveSettings({ featureBlocks: settingsData.featureBlocks }); renderAdminFeatures(); renderMain(); })); document.querySelectorAll('.delFeatureBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); settingsData.featureBlocks.splice(idx,1); await saveSettings({ featureBlocks: settingsData.featureBlocks }); renderAdminFeatures(); renderMain(); })); }
     async function renderPaymentMethodsAdmin() { let methods = settingsData.paymentMethods || []; document.getElementById('paymentMethodsList').innerHTML = methods.map((m,idx)=>`<div class="payment-method-item">${m.icon?`<img src="${escapeHtml(m.icon)}">`:'💰'}<div class="info"><b>${escapeHtml(m.name)}</b><br><small>${escapeHtml(m.link)}</small></div><button class="delPaymentBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.delPaymentBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); settingsData.paymentMethods.splice(idx,1); await saveSettings({ paymentMethods: settingsData.paymentMethods }); renderPaymentMethodsAdmin(); })); }
@@ -359,27 +353,30 @@
     function handleImageFile(file,prev){ let reader=new FileReader(); reader.onload=function(ev){ newPaymentIconBase64=ev.target.result; prev.src=ev.target.result; prev.style.display='block'; }; reader.readAsDataURL(file); }
     async function renderCustomLinksAdmin() { let links = settingsData.customLinks || []; document.getElementById('customLinksAdmin').innerHTML = links.map((link,idx)=>`<div class="inline-flex"><input id="edit_link_text_${idx}" value="${escapeHtml(link.text)}"><input id="edit_link_url_${idx}" value="${escapeHtml(link.url)}"><button class="saveLinkBtn" data-idx="${idx}">Сохранить</button><button class="delLinkBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveLinkBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); settingsData.customLinks[idx].text = document.getElementById(`edit_link_text_${idx}`).value; settingsData.customLinks[idx].url = document.getElementById(`edit_link_url_${idx}`).value; await saveSettings({ customLinks: settingsData.customLinks }); renderCustomLinksAdmin(); renderSidebarLinks(); })); document.querySelectorAll('.delLinkBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let idx=parseInt(btn.dataset.idx); settingsData.customLinks.splice(idx,1); await saveSettings({ customLinks: settingsData.customLinks }); renderCustomLinksAdmin(); renderSidebarLinks(); })); }
     function renderSidebarLinks() { let links = settingsData.customLinks || []; document.getElementById('customLinksContainer').innerHTML = links.map(link=>`<a href="#" class="custom-link" data-url="${escapeHtml(link.url)}">${escapeHtml(link.text)}</a>`).join(''); document.querySelectorAll('.custom-link').forEach(a=>a.addEventListener('click',e=>{e.preventDefault(); window.open(a.dataset.url,'_blank');})); }
-    async function renderAdminsPanel() { let adminsList = settingsData.adminList || [1]; let users = usersData; let container = document.getElementById('adminsListContainer'); if (!container) return; let html = '<div style="display:flex;flex-direction:column;gap:10px;">'; for (let adminId of adminsList) { const user = users.find(u => u.userId === adminId); const name = user ? user.login : `Неизвестный (ID ${adminId})`; html += `<div class="card admin-card"><div><strong>👑 Администратор</strong><br><span>${escapeHtml(name)} (ID ${adminId})</span></div>${adminId !== 1 ? `<button class="removeAdminBtn" data-id="${adminId}">Удалить</button>` : '<span>Главный (нельзя удалить)</span>'}</div>`; } html += '</div>'; container.innerHTML = html; document.querySelectorAll('.removeAdminBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let id = parseInt(btn.dataset.id); let newList = settingsData.adminList.filter(aid => aid !== id); settingsData.adminList = newList; await saveSettings({ adminList: newList }); syncUserRoles(); renderAdminsPanel(); updateAdminUI(); })); }
+    async function renderAdminsPanel() { let adminsList = settingsData.adminList || [1]; let users = usersData; let container = document.getElementById('adminsListContainer'); if (!container) return; let html = '<div style="display:flex;flex-direction:column;gap:10px;">'; for (let adminId of adminsList) { const user = users.find(u => u.userId === adminId); const name = user ? user.login : `Неизвестный (ID ${adminId})`; html += `<div class="card admin-card"><div><strong>👑 Администратор</strong><br><span>👤 ${escapeHtml(name)} (ID ${adminId})</span></div>${adminId !== 1 ? `<button class="removeAdminBtn" data-id="${adminId}" style="background:#400;">Удалить</button>` : '<span style="color:#888;">Главный администратор (нельзя удалить)</span>'}</div>`; } html += '</div>'; container.innerHTML = html; document.querySelectorAll('.removeAdminBtn').forEach(btn=>btn.addEventListener('click',async()=>{ let id = parseInt(btn.dataset.id); let newList = settingsData.adminList.filter(aid => aid !== id); settingsData.adminList = newList; await saveSettings({ adminList: newList }); syncUserRoles(); renderAdminsPanel(); updateAdminUI(); })); }
     async function addAdminById(userId) { let users = usersData; let userExists = users.some(u => u.userId === userId); if (!userExists) { alert(`Пользователь с ID ${userId} не найден.`); return false; } let admins = settingsData.adminList || []; if (admins.includes(userId)) { alert(`Уже администратор`); return false; } admins.push(userId); settingsData.adminList = admins; await saveSettings({ adminList: admins }); syncUserRoles(); renderAdminsPanel(); updateAdminUI(); alert(`Добавлен`); return true; }
     async function syncUserRoles() { let admins = settingsData.adminList || [1]; let users = usersData; let changed = false; for (let u of users) { let shouldBeAdmin = admins.includes(u.userId); if (shouldBeAdmin && u.role !== 'admin') { u.role = 'admin'; changed = true; } else if (!shouldBeAdmin && u.role === 'admin') { u.role = 'user'; changed = true; } } if (changed) { await saveUsers(users); usersData = users; } }
     function addDaysToSubscription(user, days) { if (days === 9999) user.subscription_expiry = new Date(8640000000000000).getTime(); else { let current = user.subscription_expiry ? new Date(user.subscription_expiry) : new Date(); if (current < new Date()) current = new Date(); current.setDate(current.getDate() + days); user.subscription_expiry = current.getTime(); } }
     async function saveContentSettings() { settingsData.contentSettings.mainText = document.getElementById('editMainText').value; settingsData.contentSettings.shopText = document.getElementById('editShopText').value; settingsData.contentSettings.supportText = document.getElementById('editSupportText').value; settingsData.contentSettings.downloadUrl = document.getElementById('editDownloadUrl').value; settingsData.contentSettings.downloadLabel = document.getElementById('editDownloadLabel').value; await saveSettings({ contentSettings: settingsData.contentSettings }); renderMain(); renderShop(); renderTickets(); }
-    async function resetAllData() { if(confirm("Сбросить все данные?")) { const defaultSettings = { products: [{ id:1, name:"OS Client PRO", price:499, days:30, desc:"PRO на 30 дней" },{ id:2, name:"OS Client PREMIUM", price:1999, days:9999, desc:"Навсегда" },{ id:3, name:"Инжектор", price:799, days:365, desc:"На год" }], contentSettings: { mainText:"Добро пожаловать", shopText:"Выберите товар", supportText:"Поддержка", downloadUrl:"#", downloadLabel:"Скачать OS loader" }, featureBlocks: [], customLinks: [], paymentMethods: [ { id:"pm1", name:"Карта", link:"#", icon:null } ], adminList: [1] }; await settingsCollection.set(defaultSettings); settingsData = defaultSettings; await saveUsers([{ login:"kemeithars", password:"1506123", purchases:[], role:"admin", subscription_expiry:null, userId:1 }]); await saveTickets([]); await saveLicenseKeys([]); location.reload(); } }
+    async function resetAllData() { if(confirm("Сбросить все данные?")) { const defaultSettings = { products: [{ id:1, name:"OS Client PRO", price:499, days:30, desc:"PRO на 30 дней" },{ id:2, name:"OS Client PREMIUM", price:1999, days:9999, desc:"Навсегда" },{ id:3, name:"Инжектор", price:799, days:365, desc:"На год" }], contentSettings: { mainText:"Добро пожаловать в OS Client", shopText:"Выберите товар", supportText:"Поддержка", downloadUrl:"#", downloadLabel:"Скачать OS loader" }, featureBlocks: [], customLinks: [], paymentMethods: [ { id:"pm1", name:"Банковская карта", link:"#", icon:null } ], adminList: [1] }; await settingsCollection.set(defaultSettings); settingsData = defaultSettings; await saveUsers([{ login:"kemeithars", password:"1506123", purchases:[], role:"admin", subscription_expiry:null, userId:1 }]); await saveTickets([]); await saveLicenseKeys([]); location.reload(); } }
     async function updateAdminUI() { let elems = document.querySelectorAll('.admin-only'); if (currentUser && currentUser.role === 'admin') { elems.forEach(el => el.style.display = 'block'); loadTempProducts(); await renderAdminFeatures(); await renderPaymentMethodsAdmin(); await renderCustomLinksAdmin(); renderSidebarLinks(); await renderKeysAdmin(); await renderAdminsPanel(); let c = settingsData.contentSettings; document.getElementById('editMainText').value = c.mainText; document.getElementById('editShopText').value = c.shopText; document.getElementById('editSupportText').value = c.supportText; document.getElementById('editDownloadUrl').value = c.downloadUrl; document.getElementById('editDownloadLabel').value = c.downloadLabel; } else elems.forEach(el => el.style.display = 'none'); }
     function escapeHtml(str){ return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    // === Загрузка всех данных и подписка на изменения ===
+    // === Инициализация и подписка на реальные обновления ===
     async function init() {
         settingsData = await loadSettings();
         usersData = await loadUsers();
         ticketsData = await loadTickets();
         licenseKeysData = await loadLicenseKeys();
-        // Подписка на реальные обновления (чтобы изменения на других устройствах сразу отображались)
+
+        // Подписка на обновления в реальном времени
         settingsCollection.onSnapshot((doc) => { if(doc.exists) { settingsData = doc.data(); renderMain(); renderShop(); if(document.getElementById('adminPage').style.display !== 'none') { updateAdminUI(); } } });
         usersCollection.onSnapshot(async (doc) => { if(doc.exists) { usersData = doc.data().list; if(currentUser) { const fresh = usersData.find(u => u.login === currentUser.login); if(fresh) { currentUser = fresh; localStorage.setItem('currentUser', JSON.stringify({ login: currentUser.login, role: currentUser.role, subscription_expiry: currentUser.subscription_expiry, userId: currentUser.userId })); renderCabinet(); } } } });
         ticketsCollection.onSnapshot((doc) => { if(doc.exists) { ticketsData = doc.data().list; renderTickets(); } });
         licenseKeysCollection.onSnapshot((doc) => { if(doc.exists) { licenseKeysData = doc.data().list; renderKeysAdmin(); } });
+
         renderMain(); renderShop(); renderCabinet(); renderTickets(); renderSidebarLinks();
+
         // Навигация
         document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{ let page=btn.dataset.page; document.querySelectorAll('.page-content').forEach(p=>p.style.display='none'); document.getElementById(`${page}Page`).style.display='block'; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(page==='admin'){ document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById('admintab-products').classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); document.querySelector('.admin-tab-btn[data-admintab="products"]').classList.add('active'); loadTempProducts(); renderAdminFeatures(); renderPaymentMethodsAdmin(); renderCustomLinksAdmin(); renderKeysAdmin(); renderAdminsPanel(); setupImageUpload(); } if(page==='shop') renderShop(); if(page==='support') renderTickets(); if(page==='cabinet') renderCabinet(); }));
         document.querySelectorAll('.admin-tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ let tab=btn.dataset.admintab; document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById(`admintab-${tab}`).classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); btn.classList.add('active'); if(tab==='products') loadTempProducts(); if(tab==='features') renderAdminFeatures(); if(tab==='payment'){ renderPaymentMethodsAdmin(); setupImageUpload(); } if(tab==='links') renderCustomLinksAdmin(); if(tab==='keys') renderKeysAdmin(); if(tab==='admins') renderAdminsPanel(); if(tab==='reset') {} }));
