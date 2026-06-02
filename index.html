@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OS Client | Чит-клиент</title>
     <style>
-        /* === Стили (без изменений, как в предыдущей версии) === */
+        /* === Стили (полностью как в предыдущей версии, без изменений) === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000000; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #ffffff; line-height: 1.5; }
         .app-wrapper { display: flex; min-height: 100vh; max-width: 1400px; margin: 0 auto; }
@@ -98,36 +98,50 @@
                 <button class="admin-tab-btn" data-admintab="buttons">Настройки кнопок</button>
                 <button class="admin-tab-btn" data-admintab="keys">Генерация ключей</button>
                 <button class="admin-tab-btn" data-admintab="admins">Админы</button>
+                <button class="admin-tab-btn" data-admintab="reset">Сброс данных</button>
             </div>
-            <div id="admintab-products" class="admin-tab-content active">
-                <div class="card"><h3>Добавить товар</h3><div class="inline-flex"><input type="text" id="newProdName" placeholder="Название" style="flex:2"><input type="number" id="newProdPrice" placeholder="Цена" style="flex:1"><input type="number" id="newProdDays" placeholder="Дни" value="30" style="flex:1"><button id="addProductBtn">Добавить</button></div></div>
-                <div class="card"><h3>Список товаров</h3><div id="adminProductsList"></div><button id="saveAllProductsBtn" style="margin-top:15px;">💾 Сохранить все товары</button></div>
-            </div>
+            <div id="admintab-products" class="admin-tab-content active"><div class="card"><h3>Добавить товар</h3><div class="inline-flex"><input type="text" id="newProdName" placeholder="Название" style="flex:2"><input type="number" id="newProdPrice" placeholder="Цена" style="flex:1"><input type="number" id="newProdDays" placeholder="Дни" value="30" style="flex:1"><button id="addProductBtn">Добавить</button></div></div><div class="card"><h3>Список товаров</h3><div id="adminProductsList"></div><button id="saveAllProductsBtn" style="margin-top:15px;">💾 Сохранить все товары</button></div></div>
             <div id="admintab-features" class="admin-tab-content"><div class="card"><h3>Управление блоками на главной</h3><div id="adminFeaturesList"></div><div class="inline-flex" style="margin-top:10px;"><input type="text" id="newFeatureName" placeholder="Название блока"><input type="text" id="newFeatureDesc" placeholder="Описание"><button id="addFeatureBtn">Добавить блок</button></div></div></div>
             <div id="admintab-payment" class="admin-tab-content"><div class="card"><h3>Способы оплаты (с иконками)</h3><div id="paymentMethodsList"></div><div class="card" style="margin-top:10px;"><h4>Добавить новый способ</h4><input type="text" id="newPaymentName" placeholder="Название"><input type="text" id="newPaymentLink" placeholder="Ссылка для оплаты"><div id="dropzone" class="dropzone">📸 Перетащите изображение сюда или нажмите для выбора<input type="file" id="fileInput" accept="image/*" style="display:none;"></div><div id="imagePreview" style="margin:10px 0; display:flex; align-items:center; gap:10px;"><span>Предпросмотр:</span><img id="previewImg" style="max-width:80px; max-height:80px; border-radius:12px; display:none;"></div><button id="addPaymentBtn">➕ Добавить способ оплаты</button></div></div></div>
             <div id="admintab-links" class="admin-tab-content"><div class="card"><h3>Дополнительные ссылки в левом меню</h3><div id="customLinksAdmin"></div><div class="inline-flex"><input type="text" id="newLinkText" placeholder="Текст ссылки"><input type="text" id="newLinkUrl" placeholder="URL"><button id="addCustomLinkBtn">Добавить ссылку</button></div></div></div>
             <div id="admintab-buttons" class="admin-tab-content"><div class="card"><h3>Настройки кнопки "Скачать OS loader"</h3><label>Текст кнопки:</label><input type="text" id="editDownloadLabel"><label>Ссылка для скачивания (URL):</label><input type="text" id="editDownloadUrl"></div><div class="card"><h3>Настройки текстов страниц</h3><label>Текст на главной (над блоками):</label><textarea id="editMainText" rows="2"></textarea><label>Текст в магазине (над товарами):</label><textarea id="editShopText" rows="2"></textarea><label>Текст в поддержке:</label><textarea id="editSupportText" rows="2"></textarea><button id="saveContentBtn" style="margin-top:10px;">Сохранить все настройки</button></div></div>
             <div id="admintab-keys" class="admin-tab-content"><div class="card"><h3>Генерация лицензионных ключей</h3><div class="inline-flex"><input type="number" id="keyDays" placeholder="Количество дней" value="30" min="1" max="3650"><button id="generateKeyBtn">Сгенерировать ключ</button></div><div id="generatedKeyDisplay" style="margin-top:10px; font-family:monospace; background:#0a0a0a; padding:10px; border-radius:8px; display:none;"></div><h4 style="margin-top:20px;">Список всех ключей</h4><div id="keysList"></div></div></div>
             <div id="admintab-admins" class="admin-tab-content"><div class="card"><h3>Управление администраторами</h3><div class="inline-flex"><input type="number" id="newAdminId" placeholder="ID пользователя" style="flex:2"><button id="addAdminBtn">➕ Добавить администратора</button></div><div id="adminsListContainer" style="margin-top: 20px;"></div></div></div>
+            <div id="admintab-reset" class="admin-tab-content"><div class="card"><h3>⚠️ Сброс всех данных</h3><p>Нажмите кнопку ниже, чтобы удалить все настройки и вернуть стандартные данные (товары, блоки функций, тексты). Аккаунт администратора kemeithars останется.</p><button id="resetAllDataBtn" style="background:#800;">Сбросить все данные</button></div></div>
         </div>
     </div>
 </div>
 <div id="paymentModal" class="modal"><div class="modal-content"><h3>Выберите способ оплаты</h3><div id="paymentModalButtons"></div><button id="closeModalBtn" style="margin-top:20px;">Закрыть</button></div></div>
 
 <script>
-    // ==================== ИНИЦИАЛИЗАЦИЯ ТОЛЬКО ПРИ ПЕРВОМ ЗАПУСКЕ ====================
-    // Если данных нет, создаём начальные настройки (один раз)
-    if (!localStorage.getItem('users')) {
-        const initialUser = {
-            login: "kemeithars",
-            password: "1506123",
-            purchases: [],
-            role: "admin",
-            subscription_expiry: null,
-            userId: 1
-        };
-        localStorage.setItem('users', JSON.stringify([initialUser]));
-        localStorage.setItem('adminList', JSON.stringify([1]));
+    // ==================== ПРИНУДИТЕЛЬНЫЙ СБРОС СТАРЫХ ДАННЫХ (ТОЛЬКО ПРИ ПЕРВОМ ЗАПУСКЕ ЭТОЙ ВЕРСИИ) ====================
+    // Проверяем, есть ли флаг, что сброс уже был выполнен
+    if (!localStorage.getItem('resetDone')) {
+        // Сохраняем текущего админа и список админов
+        let existingUser = null;
+        let existingAdminList = null;
+        try {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            existingUser = users.find(u => u.login === 'kemeithars');
+            existingAdminList = localStorage.getItem('adminList');
+        } catch(e) {}
+        
+        // Полностью очищаем localStorage
+        localStorage.clear();
+        
+        // Восстанавливаем админа и список админов
+        if (existingUser) {
+            localStorage.setItem('users', JSON.stringify([existingUser]));
+        } else {
+            localStorage.setItem('users', JSON.stringify([{ login: "kemeithars", password: "1506123", purchases: [], role: "admin", subscription_expiry: null, userId: 1 }]));
+        }
+        if (existingAdminList) {
+            localStorage.setItem('adminList', existingAdminList);
+        } else {
+            localStorage.setItem('adminList', JSON.stringify([1]));
+        }
+        
+        // Устанавливаем стандартные данные для остальных разделов
         localStorage.setItem('licenseKeys', JSON.stringify([]));
         localStorage.setItem('tickets', JSON.stringify([]));
         localStorage.setItem('products', JSON.stringify([
@@ -153,6 +167,12 @@
             { id:"pm2", name:"Криптовалюта USDT", link:"https://example.com/pay/crypto", icon:null },
             { id:"pm3", name:"Qiwi / ЮMoney", link:"https://example.com/pay/qiwi", icon:null }
         ]));
+        
+        // Устанавливаем флаг, что сброс выполнен
+        localStorage.setItem('resetDone', 'true');
+        
+        // Перезагружаем страницу, чтобы применились новые данные
+        location.reload();
     }
 
     let currentUser = null, pendingProduct = null, newPaymentIconBase64 = null;
@@ -192,7 +212,6 @@
         else { let current = user.subscription_expiry ? new Date(user.subscription_expiry) : new Date(); if (current < new Date()) current = new Date(); current.setDate(current.getDate() + days); user.subscription_expiry = current.getTime(); }
     }
 
-    // ---- ГЛАВНАЯ ----
     function renderMain() {
         const c = loadContent();
         document.getElementById('mainText').innerHTML = `<div class="card">${escapeHtml(c.mainText)}</div>`;
@@ -203,7 +222,6 @@
         if(btn) btn.onclick = () => { let url = c.downloadUrl; if(url && url!=='#') window.open(url,'_blank'); else { const blob = new Blob(["Демо-файл OS Client"],{type:"application/zip"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "OS_Loader.zip"; a.click(); URL.revokeObjectURL(a.href); } };
     }
 
-    // ---- МАГАЗИН ----
     function renderShop() {
         const c = loadContent();
         document.getElementById('shopTopText').innerHTML = `<div class="card">${escapeHtml(c.shopText)}</div>`;
@@ -223,7 +241,6 @@
     }
     function closeModal() { document.getElementById('paymentModal').style.display = 'none'; pendingProduct = null; }
 
-    // ---- ЛИЧНЫЙ КАБИНЕТ ----
     function renderCabinet() {
         const authDiv = document.getElementById('authBlock'), userDiv = document.getElementById('userInfo'), cabinetTopDiv = document.getElementById('cabinetTopText');
         if (!currentUser) {
@@ -284,7 +301,6 @@
     }
     function logout() { currentUser = null; localStorage.removeItem('currentUser'); renderCabinet(); renderTickets(); updateAdminUI(); }
 
-    // ---- ПОДДЕРЖКА ----
     function renderTickets() {
         const c = loadContent();
         document.getElementById('supportTopText').innerHTML = `<div class="card">${escapeHtml(c.supportText)}</div>`;
@@ -297,10 +313,9 @@
         if(currentUser.role==='admin') { area.innerHTML += `<div class="card"><h3>Управление тикетами (админ)</h3><div id="adminTicketsList"></div></div>`; let all=loadTickets(); document.getElementById('adminTicketsList').innerHTML = all.map((t,idx)=>`<div><b>${escapeHtml(t.title)}</b> от ${t.userLogin} (${t.date})<br>${escapeHtml(t.message)}<br><textarea id="ans_${idx}">${t.answer||''}</textarea><button class="answerTicket" data-idx="${idx}">Ответить</button></div>`).join(''); document.querySelectorAll('.answerTicket').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), answer=document.getElementById(`ans_${idx}`).value, tickets=loadTickets(); if(tickets[idx]){ tickets[idx].answer=answer; saveTickets(tickets); renderTickets(); } })); }
     }
 
-    // ---- АДМИНКА: товары, функции, оплата, ссылки, ключи, админы ----
     let tempProducts = [];
     function loadTempProducts() { tempProducts = JSON.parse(JSON.stringify(loadProducts())); renderAdminProductsTable(); }
-    function renderAdminProductsTable() { let html='<table style="width:100%"><tr><th>Название</th><th>Цена</th><th>Дни</th><th></th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input id="temp_name_${idx}" value="${escapeHtml(p.name)}"></td><td><input id="temp_price_${idx}" value="${p.price}"></td><td><input id="temp_days_${idx}" value="${p.days}"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'赶<table>'; document.getElementById('adminProductsList').innerHTML = html; document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ tempProducts.splice(parseInt(btn.dataset.idx),1); renderAdminProductsTable(); })); }
+    function renderAdminProductsTable() { let html='<table style="width:100%"><tr><th>Название</th><th>Цена</th><th>Дни</th><th></th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input id="temp_name_${idx}" value="${escapeHtml(p.name)}"></td><td><input id="temp_price_${idx}" value="${p.price}"></td><td><input id="temp_days_${idx}" value="${p.days}"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'赶</table>'; document.getElementById('adminProductsList').innerHTML = html; document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ tempProducts.splice(parseInt(btn.dataset.idx),1); renderAdminProductsTable(); })); }
     function saveAllProducts() { for(let i=0;i<tempProducts.length;i++){ let name=document.getElementById(`temp_name_${i}`)?.value, price=parseInt(document.getElementById(`temp_price_${i}`)?.value), days=parseInt(document.getElementById(`temp_days_${i}`)?.value); if(name && !isNaN(price) && !isNaN(days)){ tempProducts[i].name=name; tempProducts[i].price=price; tempProducts[i].days=days; tempProducts[i].desc=`${name} на ${days===9999?'∞':days+' дн.'}`; } } saveProducts(tempProducts); renderShop(); }
     function addProduct(n,p,d){ if(!n||isNaN(p)) return false; let newId=tempProducts.length?Math.max(...tempProducts.map(p=>p.id))+1:4; tempProducts.push({ id:newId, name:n, price:parseInt(p), days:parseInt(d), desc:`${n} на ${parseInt(d)===9999?'∞':d+' дн.'}` }); renderAdminProductsTable(); return true; }
     function renderKeysAdmin() { let keys=loadLicenseKeys(); document.getElementById('keysList').innerHTML = keys.length? keys.map((k,idx)=>`<div class="key-list-item"><code>${escapeHtml(k.key)}</code> — ${k.days} дн. — ${k.used?`Использован ${k.usedBy} ${k.usedAt}`:'Не использован'}<button class="deleteKeyBtn" data-idx="${idx}" style="background:#400;">Удалить</button></div>`).join('') : '<p>Нет сгенерированных ключей</p>'; document.querySelectorAll('.deleteKeyBtn').forEach(btn=>btn.addEventListener('click',()=>{ let keys=loadLicenseKeys(); keys.splice(parseInt(btn.dataset.idx),1); saveLicenseKeys(keys); renderKeysAdmin(); })); }
@@ -366,12 +381,51 @@
     }
 
     function saveContentSettings() { let newC={ mainText:document.getElementById('editMainText').value, shopText:document.getElementById('editShopText').value, supportText:document.getElementById('editSupportText').value, downloadUrl:document.getElementById('editDownloadUrl').value, downloadLabel:document.getElementById('editDownloadLabel').value }; saveContent(newC); renderMain(); renderShop(); renderTickets(); }
+    function resetAllData() {
+        if (confirm("⚠️ ВНИМАНИЕ! Это удалит все товары, блоки функций, способы оплаты, тексты и ключи. Аккаунт администратора kemeithars останется. Продолжить?")) {
+            // Очищаем всё, кроме users и adminList
+            const usersBackup = localStorage.getItem('users');
+            const adminListBackup = localStorage.getItem('adminList');
+            localStorage.clear();
+            localStorage.setItem('users', usersBackup);
+            localStorage.setItem('adminList', adminListBackup);
+            // Устанавливаем стандартные данные
+            localStorage.setItem('licenseKeys', JSON.stringify([]));
+            localStorage.setItem('tickets', JSON.stringify([]));
+            localStorage.setItem('products', JSON.stringify([
+                { id:1, name:"OS Client PRO", price:499, days:30, desc:"Aimbot+ESP+Wallhack на 30 дней" },
+                { id:2, name:"OS Client PREMIUM", price:1999, days:9999, desc:"Все функции + обновления навсегда" },
+                { id:3, name:"Инжектор + Байпас", price:799, days:365, desc:"Обход античитов на год" }
+            ]));
+            localStorage.setItem('contentSettings', JSON.stringify({
+                mainText: "Добро пожаловать в OS Client. Полный контроль над играми.",
+                shopText: "Выберите подходящую подписку или приобретите читы навсегда.",
+                supportText: "Создайте обращение, администратор ответит в ближайшее время.",
+                downloadUrl: "#",
+                downloadLabel: "Скачать OS loader"
+            }));
+            localStorage.setItem('featureBlocks', JSON.stringify([
+                { id:"f1", name:"Aimbot", desc:"Автоматическое наведение + настройка FOV." },
+                { id:"f2", name:"ESP", desc:"Отображение игроков, здоровья, стен." },
+                { id:"f3", name:"Антидетект", desc:"Обход EAC, BattleEye, Vanguard." }
+            ]));
+            localStorage.setItem('customLinks', JSON.stringify([]));
+            localStorage.setItem('paymentMethods', JSON.stringify([
+                { id:"pm1", name:"Банковская карта", link:"https://example.com/pay/card", icon:null },
+                { id:"pm2", name:"Криптовалюта USDT", link:"https://example.com/pay/crypto", icon:null },
+                { id:"pm3", name:"Qiwi / ЮMoney", link:"https://example.com/pay/qiwi", icon:null }
+            ]));
+            // Перезагружаем страницу
+            location.reload();
+        }
+    }
+
     function loadSession() { let saved=localStorage.getItem('currentUser'); if(saved){ try{ let parsed=JSON.parse(saved), users=loadUsers(), fresh=users.find(u=>u.login===parsed.login); if(fresh) currentUser=fresh; renderCabinet(); renderTickets(); updateAdminUI(); }catch(e){} } else renderCabinet(); renderMain(); renderShop(); renderTickets(); renderSidebarLinks(); }
     function escapeHtml(str){ return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
     // Навигация
     document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{ let page=btn.dataset.page; document.querySelectorAll('.page-content').forEach(p=>p.style.display='none'); document.getElementById(`${page}Page`).style.display='block'; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(page==='admin'){ document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById('admintab-products').classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); document.querySelector('.admin-tab-btn[data-admintab="products"]').classList.add('active'); loadTempProducts(); renderAdminFeatures(); renderPaymentMethodsAdmin(); renderCustomLinksAdmin(); renderKeysAdmin(); renderAdminsPanel(); setupImageUpload(); } if(page==='shop') renderShop(); if(page==='support') renderTickets(); if(page==='cabinet') renderCabinet(); }));
-    document.querySelectorAll('.admin-tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ let tab=btn.dataset.admintab; document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById(`admintab-${tab}`).classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); btn.classList.add('active'); if(tab==='products') loadTempProducts(); if(tab==='features') renderAdminFeatures(); if(tab==='payment'){ renderPaymentMethodsAdmin(); setupImageUpload(); } if(tab==='links') renderCustomLinksAdmin(); if(tab==='keys') renderKeysAdmin(); if(tab==='admins') renderAdminsPanel(); }));
+    document.querySelectorAll('.admin-tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ let tab=btn.dataset.admintab; document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById(`admintab-${tab}`).classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); btn.classList.add('active'); if(tab==='products') loadTempProducts(); if(tab==='features') renderAdminFeatures(); if(tab==='payment'){ renderPaymentMethodsAdmin(); setupImageUpload(); } if(tab==='links') renderCustomLinksAdmin(); if(tab==='keys') renderKeysAdmin(); if(tab==='admins') renderAdminsPanel(); if(tab==='reset') {} }));
     document.getElementById('gotoShopFromMain')?.addEventListener('click',()=>{ document.querySelector('.nav-btn[data-page="shop"]').click(); });
     document.getElementById('addProductBtn')?.addEventListener('click',()=>{ let n=document.getElementById('newProdName').value, p=document.getElementById('newProdPrice').value, d=document.getElementById('newProdDays').value; if(addProduct(n,p,d)){ document.getElementById('newProdName').value=''; document.getElementById('newProdPrice').value=''; document.getElementById('newProdDays').value='30'; } else alert("Введите название и цену"); });
     document.getElementById('saveAllProductsBtn')?.addEventListener('click',saveAllProducts);
@@ -383,6 +437,7 @@
     window.onclick = (e) => { if(e.target===document.getElementById('paymentModal')) closeModal(); };
     document.getElementById('generateKeyBtn')?.addEventListener('click',()=>{ let days=parseInt(document.getElementById('keyDays').value); if(isNaN(days)||days<1){ alert("Введите корректное количество дней"); return; } let newKey=generateKey(days); let disp=document.getElementById('generatedKeyDisplay'); disp.innerHTML=`Сгенерирован ключ: <strong>${newKey}</strong> на ${days} дней`; disp.style.display='block'; setTimeout(()=>disp.style.display='none',5000); });
     document.getElementById('addAdminBtn')?.addEventListener('click', () => { const idInput = document.getElementById('newAdminId'); const userId = parseInt(idInput.value); if (isNaN(userId)) { alert("Введите числовой ID"); return; } addAdminById(userId); idInput.value = ''; });
+    document.getElementById('resetAllDataBtn')?.addEventListener('click', resetAllData);
     loadSession(); setupImageUpload();
 </script>
 </body>
