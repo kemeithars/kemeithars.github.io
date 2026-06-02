@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OS Client | Чит-клиент</title>
     <style>
-        /* === ВСЕ СТИЛИ ОСТАЮТСЯ ТАКИМИ ЖЕ, КАК В ПРЕДЫДУЩЕЙ ВЕРСИИ === */
+        /* Стили без изменений (такие же, как были) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000000; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #ffffff; line-height: 1.5; }
         .app-wrapper { display: flex; min-height: 100vh; max-width: 1400px; margin: 0 auto; }
@@ -99,32 +99,34 @@
                 <button class="admin-tab-btn" data-admintab="keys">Генерация ключей</button>
                 <button class="admin-tab-btn" data-admintab="admins">Админы</button>
                 <button class="admin-tab-btn" data-admintab="reset">Сброс данных</button>
+                <button class="admin-tab-btn" data-admintab="export">Экспорт/Импорт</button>
             </div>
-            <div id="admintab-products" class="admin-tab-content active"><div class="card"><h3>Добавить товар</h3><div class="inline-flex"><input type="text" id="newProdName" placeholder="Название" style="flex:2"><input type="number" id="newProdPrice" placeholder="Цена" style="flex:1"><input type="number" id="newProdDays" placeholder="Дни" value="30" style="flex:1"><button id="addProductBtn">Добавить</button></div></div><div class="card"><h3>Список товаров</h3><div id="adminProductsList"></div><button id="saveAllProductsBtn" style="margin-top:15px;">💾 Сохранить все товары</button></div></div>
+            <div id="admintab-products" class="admin-tab-content active">
+                <div class="card"><h3>Добавить товар</h3><div class="inline-flex"><input type="text" id="newProdName" placeholder="Название" style="flex:2"><input type="number" id="newProdPrice" placeholder="Цена" style="flex:1"><input type="number" id="newProdDays" placeholder="Дни" value="30" style="flex:1"><button id="addProductBtn">Добавить</button></div></div>
+                <div class="card"><h3>Список товаров (изменения сохраняются автоматически)</h3><div id="adminProductsList"></div></div>
+            </div>
             <div id="admintab-features" class="admin-tab-content"><div class="card"><h3>Управление блоками на главной</h3><div id="adminFeaturesList"></div><div class="inline-flex" style="margin-top:10px;"><input type="text" id="newFeatureName" placeholder="Название блока"><input type="text" id="newFeatureDesc" placeholder="Описание"><button id="addFeatureBtn">Добавить блок</button></div></div></div>
             <div id="admintab-payment" class="admin-tab-content"><div class="card"><h3>Способы оплаты (с иконками)</h3><div id="paymentMethodsList"></div><div class="card" style="margin-top:10px;"><h4>Добавить новый способ</h4><input type="text" id="newPaymentName" placeholder="Название"><input type="text" id="newPaymentLink" placeholder="Ссылка для оплаты"><div id="dropzone" class="dropzone">📸 Перетащите изображение сюда или нажмите для выбора<input type="file" id="fileInput" accept="image/*" style="display:none;"></div><div id="imagePreview" style="margin:10px 0; display:flex; align-items:center; gap:10px;"><span>Предпросмотр:</span><img id="previewImg" style="max-width:80px; max-height:80px; border-radius:12px; display:none;"></div><button id="addPaymentBtn">➕ Добавить способ оплаты</button></div></div></div>
             <div id="admintab-links" class="admin-tab-content"><div class="card"><h3>Дополнительные ссылки в левом меню</h3><div id="customLinksAdmin"></div><div class="inline-flex"><input type="text" id="newLinkText" placeholder="Текст ссылки"><input type="text" id="newLinkUrl" placeholder="URL"><button id="addCustomLinkBtn">Добавить ссылку</button></div></div></div>
-            <div id="admintab-buttons" class="admin-tab-content"><div class="card"><h3>Настройки кнопки "Скачать OS loader"</h3><label>Текст кнопки:</label><input type="text" id="editDownloadLabel"><label>Ссылка для скачивания (URL):</label><input type="text" id="editDownloadUrl"></div><div class="card"><h3>Настройки текстов страниц</h3><label>Текст на главной (над блоками):</label><textarea id="editMainText" rows="2"></textarea><label>Текст в магазине (над товарами):</label><textarea id="editShopText" rows="2"></textarea><label>Текст в поддержке:</label><textarea id="editSupportText" rows="2"></textarea><button id="saveContentBtn" style="margin-top:10px;">Сохранить все настройки</button></div></div>
+            <div id="admintab-buttons" class="admin-tab-content">
+                <div class="card"><h3>Настройки кнопки "Скачать OS loader"</h3><label>Текст кнопки:</label><input type="text" id="editDownloadLabel" placeholder="Текст"><label>Ссылка для скачивания (URL):</label><input type="text" id="editDownloadUrl" placeholder="https://..."></div>
+                <div class="card"><h3>Настройки текстов страниц (изменения сохраняются автоматически)</h3><label>Текст на главной (над блоками):</label><textarea id="editMainText" rows="2"></textarea><label>Текст в магазине (над товарами):</label><textarea id="editShopText" rows="2"></textarea><label>Текст в поддержке:</label><textarea id="editSupportText" rows="2"></textarea></div>
+            </div>
             <div id="admintab-keys" class="admin-tab-content"><div class="card"><h3>Генерация лицензионных ключей</h3><div class="inline-flex"><input type="number" id="keyDays" placeholder="Количество дней" value="30" min="1" max="3650"><button id="generateKeyBtn">Сгенерировать ключ</button></div><div id="generatedKeyDisplay" style="margin-top:10px; font-family:monospace; background:#0a0a0a; padding:10px; border-radius:8px; display:none;"></div><h4 style="margin-top:20px;">Список всех ключей</h4><div id="keysList"></div></div></div>
             <div id="admintab-admins" class="admin-tab-content"><div class="card"><h3>Управление администраторами</h3><div class="inline-flex"><input type="number" id="newAdminId" placeholder="ID пользователя" style="flex:2"><button id="addAdminBtn">➕ Добавить администратора</button></div><div id="adminsListContainer" style="margin-top: 20px;"></div></div></div>
             <div id="admintab-reset" class="admin-tab-content"><div class="card"><h3>⚠️ Сброс всех данных</h3><p>Нажмите кнопку ниже, чтобы удалить все настройки и вернуть стандартные данные (товары, блоки функций, тексты). Аккаунт администратора kemeithars останется.</p><button id="resetAllDataBtn" style="background:#800;">Сбросить все данные</button></div></div>
+            <div id="admintab-export" class="admin-tab-content">
+                <div class="card"><h3>📤 Экспорт / Импорт всех данных</h3><p>Скачайте файл с настройками с одного устройства и загрузите на другое, чтобы синхронизировать изменения.</p><button id="exportDataBtn">📥 Экспортировать настройки</button><br><br><label>Импортировать файл настроек:</label><input type="file" id="importFileInput" accept=".json"><button id="importDataBtn">📂 Импортировать</button><div id="importResult"></div></div>
+            </div>
         </div>
     </div>
 </div>
 <div id="paymentModal" class="modal"><div class="modal-content"><h3>Выберите способ оплаты</h3><div id="paymentModalButtons"></div><button id="closeModalBtn" style="margin-top:20px;">Закрыть</button></div></div>
 
 <script>
-    // ==================== ИНИЦИАЛИЗАЦИЯ ТОЛЬКО ПРИ ПЕРВОМ ЗАПУСКЕ ====================
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     if (!localStorage.getItem('users')) {
-        // Первый запуск – создаём пользователя и все начальные данные
-        const initialUser = {
-            login: "kemeithars",
-            password: "1506123",
-            purchases: [],
-            role: "admin",
-            subscription_expiry: null,
-            userId: 1
-        };
+        const initialUser = { login: "kemeithars", password: "1506123", purchases: [], role: "admin", subscription_expiry: null, userId: 1 };
         localStorage.setItem('users', JSON.stringify([initialUser]));
         localStorage.setItem('adminList', JSON.stringify([1]));
         localStorage.setItem('licenseKeys', JSON.stringify([]));
@@ -141,7 +143,6 @@
             downloadUrl: "#",
             downloadLabel: "Скачать OS loader"
         }));
-        // !!! ВАЖНО: БЛОКИ ФУНКЦИЙ ПО УМОЛЧАНИЮ ПУСТЫЕ !!!
         localStorage.setItem('featureBlocks', JSON.stringify([]));
         localStorage.setItem('customLinks', JSON.stringify([]));
         localStorage.setItem('paymentMethods', JSON.stringify([
@@ -153,259 +154,90 @@
 
     let currentUser = null, pendingProduct = null, newPaymentIconBase64 = null;
     function loadProducts() { return JSON.parse(localStorage.getItem('products')); }
-    function saveProducts(p) { localStorage.setItem('products', JSON.stringify(p)); }
+    function saveProducts(p) { localStorage.setItem('products', JSON.stringify(p)); renderShop(); }
     function loadUsers() { return JSON.parse(localStorage.getItem('users')); }
     function saveUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
     function loadTickets() { return JSON.parse(localStorage.getItem('tickets')); }
     function saveTickets(t) { localStorage.setItem('tickets', JSON.stringify(t)); }
     function loadContent() { return JSON.parse(localStorage.getItem('contentSettings')); }
-    function saveContent(c) { localStorage.setItem('contentSettings', JSON.stringify(c)); }
+    function saveContent(c) { localStorage.setItem('contentSettings', JSON.stringify(c)); renderMain(); renderShop(); renderTickets(); }
     function loadFeatures() { return JSON.parse(localStorage.getItem('featureBlocks')); }
-    function saveFeatures(f) { localStorage.setItem('featureBlocks', JSON.stringify(f)); }
+    function saveFeatures(f) { localStorage.setItem('featureBlocks', JSON.stringify(f)); renderMain(); }
     function loadLinks() { return JSON.parse(localStorage.getItem('customLinks')); }
-    function saveLinks(l) { localStorage.setItem('customLinks', JSON.stringify(l)); }
+    function saveLinks(l) { localStorage.setItem('customLinks', JSON.stringify(l)); renderSidebarLinks(); }
     function loadPaymentMethods() { return JSON.parse(localStorage.getItem('paymentMethods')); }
     function savePaymentMethods(p) { localStorage.setItem('paymentMethods', JSON.stringify(p)); }
     function loadLicenseKeys() { return JSON.parse(localStorage.getItem('licenseKeys')); }
-    function saveLicenseKeys(k) { localStorage.setItem('licenseKeys', JSON.stringify(k)); }
+    function saveLicenseKeys(k) { localStorage.setItem('licenseKeys', JSON.stringify(k)); renderKeysAdmin(); }
     function loadAdminList() { return JSON.parse(localStorage.getItem('adminList')); }
-    function saveAdminList(a) { localStorage.setItem('adminList', JSON.stringify(a)); }
+    function saveAdminList(a) { localStorage.setItem('adminList', JSON.stringify(a)); syncUserRoles(); renderAdminsPanel(); updateAdminUI(); }
 
-    function syncUserRoles() {
-        let users = loadUsers();
-        let admins = loadAdminList();
-        let changed = false;
-        for (let u of users) {
-            const shouldBeAdmin = admins.includes(u.userId);
-            if (shouldBeAdmin && u.role !== 'admin') { u.role = 'admin'; changed = true; }
-            else if (!shouldBeAdmin && u.role === 'admin') { u.role = 'user'; changed = true; }
-        }
-        if (changed) saveUsers(users);
-    }
+    function syncUserRoles() { /* без изменений */ let users = loadUsers(), admins = loadAdminList(), changed = false; for(let u of users){ let should = admins.includes(u.userId); if(should && u.role!=='admin'){ u.role='admin'; changed=true; } else if(!should && u.role==='admin'){ u.role='user'; changed=true; } } if(changed) saveUsers(users); }
+    function addDaysToSubscription(user, days) { if(days===9999) user.subscription_expiry=new Date(8640000000000000).getTime(); else { let cur=user.subscription_expiry?new Date(user.subscription_expiry):new Date(); if(cur<new Date()) cur=new Date(); cur.setDate(cur.getDate()+days); user.subscription_expiry=cur.getTime(); } }
 
-    function addDaysToSubscription(user, days) {
-        if (days === 9999) user.subscription_expiry = new Date(8640000000000000).getTime();
-        else { let current = user.subscription_expiry ? new Date(user.subscription_expiry) : new Date(); if (current < new Date()) current = new Date(); current.setDate(current.getDate() + days); user.subscription_expiry = current.getTime(); }
-    }
+    function renderMain() { let c=loadContent(); document.getElementById('mainText').innerHTML=`<div class="card">${escapeHtml(c.mainText)}</div>`; let features=loadFeatures(); document.getElementById('featuresList').innerHTML=features.map(f=>`<div class="card feature-card"><h3>${escapeHtml(f.name)}</h3><p>${escapeHtml(f.desc)}</p></div>`).join(''); document.getElementById('downloadBlock').innerHTML=`<div class="card"><button id="dynamicDownloadBtn">${escapeHtml(c.downloadLabel)}</button></div>`; let btn=document.getElementById('dynamicDownloadBtn'); if(btn) btn.onclick=()=>{ let url=c.downloadUrl; if(url && url!=='#') window.open(url,'_blank'); else { let blob=new Blob(["Демо-файл OS Client"],{type:"application/zip"}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="OS_Loader.zip"; a.click(); URL.revokeObjectURL(a.href); } }; }
+    function renderShop() { let c=loadContent(); document.getElementById('shopTopText').innerHTML=`<div class="card">${escapeHtml(c.shopText)}</div>`; let products=loadProducts(); document.getElementById('productsList').innerHTML=products.map(p=>`<div class="card product-card"><b>${escapeHtml(p.name)}</b> — ${p.price} ₽<br><small>${escapeHtml(p.desc)} | Срок: ${p.days===9999?'∞':p.days+' дн.'}</small><br><button class="openPaymentBtn" data-id="${p.id}" data-days="${p.days}" style="margin-top:10px;">Купить</button></div>`).join(''); document.querySelectorAll('.openPaymentBtn').forEach(btn=>btn.addEventListener('click',()=>{ pendingProduct={id:parseInt(btn.dataset.id), days:parseInt(btn.dataset.days)}; showPaymentModal(); })); }
+    function showPaymentModal() { let methods=loadPaymentMethods(); let container=document.getElementById('paymentModalButtons'); if(methods.length===0) container.innerHTML='<div class="warning">Способы оплаты не добавлены.</div>'; else { container.innerHTML=methods.map(m=>`<button class="payment-btn" data-link="${escapeHtml(m.link)}"><span>${m.icon?`<img src="${escapeHtml(m.icon)}">`:'💰'}</span> <span>${escapeHtml(m.name)}</span></button>`).join(''); document.querySelectorAll('.payment-btn').forEach(btn=>btn.addEventListener('click',()=>{ window.open(btn.dataset.link||'#','_blank'); if(currentUser && currentUser.role!=='admin'){ let users=loadUsers(), idx=users.findIndex(u=>u.login===currentUser.login); if(idx!==-1){ addDaysToSubscription(users[idx], pendingProduct.days); saveUsers(users); currentUser=users[idx]; localStorage.setItem('currentUser',JSON.stringify({login:currentUser.login,role:currentUser.role,subscription_expiry:currentUser.subscription_expiry,userId:currentUser.userId})); renderCabinet(); } } closeModal(); })); } document.getElementById('paymentModal').style.display='flex'; }
+    function closeModal() { document.getElementById('paymentModal').style.display='none'; pendingProduct=null; }
+    function renderCabinet() { /* без изменений, как в предыдущей версии */ let authDiv=document.getElementById('authBlock'), userDiv=document.getElementById('userInfo'), cabinetTopDiv=document.getElementById('cabinetTopText'); if(!currentUser){ authDiv.style.display='block'; userDiv.style.display='none'; cabinetTopDiv.style.display='block'; cabinetTopDiv.innerHTML=`<div class="card">Войдите или зарегистрируйтесь, чтобы покупать товары или активировать ключ.</div>`; authDiv.innerHTML=`<div class="card"><h3>Вход / Регистрация</h3><input type="text" id="loginName" placeholder="Логин"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button><button id="doRegister">Зарегистрироваться</button></div>`; document.getElementById('doLogin')?.addEventListener('click',()=>{ loginUser(document.getElementById('loginName').value,document.getElementById('loginPass').value); }); document.getElementById('doRegister')?.addEventListener('click',()=>{ registerUser(document.getElementById('loginName').value,document.getElementById('loginPass').value); }); } else { authDiv.style.display='none'; userDiv.style.display='block'; cabinetTopDiv.style.display='none'; let subInfo=''; if(currentUser.subscription_expiry){ let expiryDate=new Date(currentUser.subscription_expiry); if(expiryDate.getTime()>8640000000000000) subInfo='<div class="success">⭐ Подписка активна навсегда (бессрочный доступ).</div>'; else if(expiryDate>new Date()) subInfo=`<div class="success">✅ Подписка активна. Действует до: ${expiryDate.toLocaleDateString()} ${expiryDate.toLocaleTimeString()}.</div>`; else subInfo='<div class="warning">⚠️ Подписка истекла. Чтобы продолжить пользоваться читом, купите товар в магазине или активируйте лицензионный ключ.</div>'; } else subInfo='<div class="warning">📦 Подписка отсутствует. Для доступа приобретите товар в разделе «Мазагин» и активируйте ключ ниже.</div>'; let userId=currentUser.userId||'?'; userDiv.innerHTML=`<div class="card product-card"><div class="user-id-block"><span><strong>👤 Никнейм:</strong> ${escapeHtml(currentUser.login)}</span><span class="user-id-number"><strong>🆔 ID:</strong> ${userId}</span></div></div><div class="card"><h3>Статус подписки</h3>${subInfo}</div><div class="card"><h3>Активация ключа</h3><div class="inline-flex"><input type="text" id="activationKey" placeholder="Введите лицензионный ключ" style="flex:3"><button id="activateKeyBtn">Активировать ключ</button></div><div id="activationResult"></div></div><div class="card"><button id="logoutBtn">Выйти</button></div>`; document.getElementById('logoutBtn')?.addEventListener('click',()=>logout()); document.getElementById('activateKeyBtn')?.addEventListener('click',()=>{ let key=document.getElementById('activationKey').value.trim(); if(!key) document.getElementById('activationResult').innerHTML='<div class="warning">Введите ключ</div>'; else activateKey(key); }); } }
+    function activateKey(key) { let keys=loadLicenseKeys(), keyData=keys.find(k=>k.key===key&&!k.used); if(!keyData){ document.getElementById('activationResult').innerHTML='<div class="warning">Неверный или уже использованный ключ</div>'; return; } let users=loadUsers(), idx=users.findIndex(u=>u.login===currentUser.login); if(idx===-1) return; addDaysToSubscription(users[idx], keyData.days); keyData.used=true; keyData.usedBy=currentUser.login; keyData.usedAt=new Date().toISOString(); saveLicenseKeys(keys); saveUsers(users); currentUser=users[idx]; localStorage.setItem('currentUser',JSON.stringify({login:currentUser.login,role:currentUser.role,subscription_expiry:currentUser.subscription_expiry,userId:currentUser.userId})); document.getElementById('activationResult').innerHTML=`<div class="success">Ключ активирован! Добавлено ${keyData.days} дней подписки.</div>`; renderCabinet(); }
+    function loginUser(login,pass){ let users=loadUsers(), user=users.find(u=>u.login===login && u.password===pass); if(user){ currentUser={...user}; if(!currentUser.purchases) currentUser.purchases=[]; localStorage.setItem('currentUser',JSON.stringify({login:currentUser.login,role:currentUser.role,subscription_expiry:currentUser.subscription_expiry,userId:currentUser.userId})); renderCabinet(); renderTickets(); updateAdminUI(); } else alert("Неверный логин или пароль"); }
+    function registerUser(login,pass){ if(!login.trim()||!pass.trim()){ alert("Заполните поля"); return; } let users=loadUsers(); if(users.find(u=>u.login===login)){ alert("Логин занят"); return; } let maxId=0; for(let u of users) if(u.userId && u.userId>maxId) maxId=u.userId; let newId=maxId+1; users.push({login,password:pass,purchases:[],role:"user",subscription_expiry:null,userId:newId}); saveUsers(users); alert("Регистрация успешна, теперь войдите"); }
+    function logout(){ currentUser=null; localStorage.removeItem('currentUser'); renderCabinet(); renderTickets(); updateAdminUI(); }
+    function renderTickets() { /* без изменений, как раньше */ let c=loadContent(); document.getElementById('supportTopText').innerHTML=`<div class="card">${escapeHtml(c.supportText)}</div>`; let area=document.getElementById('ticketsArea'); if(!currentUser){ area.innerHTML='<div class="warning">Войдите в аккаунт, чтобы создавать обращения.</div>'; return; } let tickets=loadTickets(), userTickets=tickets.filter(t=>t.userLogin===currentUser.login); area.innerHTML=`<div class="card"><h3>Новое обращение</h3><input type="text" id="ticketTitle" placeholder="Тема"><textarea id="ticketMsg" rows="3" placeholder="Сообщение..."></textarea><button id="createTicketBtn">Отправить</button></div><div id="ticketsList"></div>`; document.getElementById('ticketsList').innerHTML=userTickets.length? `<div class="card"><h3>Ваши обращения</h3>${userTickets.map(t=>`<div style="border-bottom:1px solid #333; padding:8px;"><b>${escapeHtml(t.title)}</b> (${t.date})<br>${escapeHtml(t.message)}<br><span style="color:#aaa;">Ответ: ${t.answer||'ожидает'}</span></div>`).join('')}</div>`:'<div class="card">Нет обращений.</div>'; document.getElementById('createTicketBtn')?.addEventListener('click',()=>{ let title=document.getElementById('ticketTitle').value, msg=document.getElementById('ticketMsg').value; if(!title||!msg){ alert("Заполните поля"); return; } let tickets=loadTickets(); tickets.push({id:Date.now(),userLogin:currentUser.login,title,message:msg,date:new Date().toLocaleString(),answer:null}); saveTickets(tickets); renderTickets(); }); if(currentUser.role==='admin'){ area.innerHTML+=`<div class="card"><h3>Управление тикетами (админ)</h3><div id="adminTicketsList"></div></div>`; let all=loadTickets(); document.getElementById('adminTicketsList').innerHTML=all.map((t,idx)=>`<div><b>${escapeHtml(t.title)}</b> от ${t.userLogin} (${t.date})<br>${escapeHtml(t.message)}<br><textarea id="ans_${idx}">${t.answer||''}</textarea><button class="answerTicket" data-idx="${idx}">Ответить</button></div>`).join(''); document.querySelectorAll('.answerTicket').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), answer=document.getElementById(`ans_${idx}`).value, tickets=loadTickets(); if(tickets[idx]){ tickets[idx].answer=answer; saveTickets(tickets); renderTickets(); } })); } }
 
-    function renderMain() {
-        const c = loadContent();
-        document.getElementById('mainText').innerHTML = `<div class="card">${escapeHtml(c.mainText)}</div>`;
-        const features = loadFeatures();
-        document.getElementById('featuresList').innerHTML = features.map(f => `<div class="card feature-card"><h3>${escapeHtml(f.name)}</h3><p>${escapeHtml(f.desc)}</p></div>`).join('');
-        document.getElementById('downloadBlock').innerHTML = `<div class="card"><button id="dynamicDownloadBtn">${escapeHtml(c.downloadLabel)}</button></div>`;
-        const btn = document.getElementById('dynamicDownloadBtn');
-        if(btn) btn.onclick = () => { let url = c.downloadUrl; if(url && url!=='#') window.open(url,'_blank'); else { const blob = new Blob(["Демо-файл OS Client"],{type:"application/zip"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "OS_Loader.zip"; a.click(); URL.revokeObjectURL(a.href); } };
-    }
-
-    function renderShop() {
-        const c = loadContent();
-        document.getElementById('shopTopText').innerHTML = `<div class="card">${escapeHtml(c.shopText)}</div>`;
-        const products = loadProducts();
-        document.getElementById('productsList').innerHTML = products.map(p => `<div class="card product-card"><b>${escapeHtml(p.name)}</b> — ${p.price} ₽<br><small>${escapeHtml(p.desc)} | Срок: ${p.days===9999?'∞':p.days+' дн.'}</small><br><button class="openPaymentBtn" data-id="${p.id}" data-days="${p.days}" style="margin-top:10px;">Купить</button></div>`).join('');
-        document.querySelectorAll('.openPaymentBtn').forEach(btn => btn.addEventListener('click', (e) => { pendingProduct = { id: parseInt(btn.dataset.id), days: parseInt(btn.dataset.days) }; showPaymentModal(); }));
-    }
-    function showPaymentModal() {
-        const methods = loadPaymentMethods();
-        const container = document.getElementById('paymentModalButtons');
-        if(methods.length===0) container.innerHTML = '<div class="warning">Способы оплаты не добавлены.</div>';
-        else {
-            container.innerHTML = methods.map(m => `<button class="payment-btn" data-link="${escapeHtml(m.link)}"><span>${m.icon?`<img src="${escapeHtml(m.icon)}">`:'💰'}</span> <span>${escapeHtml(m.name)}</span></button>`).join('');
-            document.querySelectorAll('.payment-btn').forEach(btn => btn.addEventListener('click', () => { window.open(btn.dataset.link || '#', '_blank'); if(currentUser && currentUser.role !== 'admin') { let users = loadUsers(), idx = users.findIndex(u=>u.login===currentUser.login); if(idx!==-1){ addDaysToSubscription(users[idx], pendingProduct.days); saveUsers(users); currentUser = users[idx]; localStorage.setItem('currentUser', JSON.stringify({ login: currentUser.login, role: currentUser.role, subscription_expiry: currentUser.subscription_expiry, userId: currentUser.userId })); renderCabinet(); } } closeModal(); }));
-        }
-        document.getElementById('paymentModal').style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('paymentModal').style.display = 'none'; pendingProduct = null; }
-
-    function renderCabinet() {
-        const authDiv = document.getElementById('authBlock'), userDiv = document.getElementById('userInfo'), cabinetTopDiv = document.getElementById('cabinetTopText');
-        if (!currentUser) {
-            authDiv.style.display = 'block'; userDiv.style.display = 'none'; cabinetTopDiv.style.display = 'block';
-            cabinetTopDiv.innerHTML = `<div class="card">Войдите или зарегистрируйтесь, чтобы покупать товары или активировать ключ.</div>`;
-            authDiv.innerHTML = `<div class="card"><h3>Вход / Регистрация</h3><input type="text" id="loginName" placeholder="Логин"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button><button id="doRegister">Зарегистрироваться</button></div>`;
-            document.getElementById('doLogin')?.addEventListener('click', () => { loginUser(document.getElementById('loginName').value, document.getElementById('loginPass').value); });
-            document.getElementById('doRegister')?.addEventListener('click', () => { registerUser(document.getElementById('loginName').value, document.getElementById('loginPass').value); });
-        } else {
-            authDiv.style.display = 'none'; userDiv.style.display = 'block'; cabinetTopDiv.style.display = 'none';
-            let subInfo = '';
-            if (currentUser.subscription_expiry) {
-                let expiryDate = new Date(currentUser.subscription_expiry);
-                if (expiryDate.getTime() > 8640000000000000) subInfo = '<div class="success">⭐ Подписка активна навсегда (бессрочный доступ).</div>';
-                else if (expiryDate > new Date()) subInfo = `<div class="success">✅ Подписка активна. Действует до: ${expiryDate.toLocaleDateString()} ${expiryDate.toLocaleTimeString()}.</div>`;
-                else subInfo = '<div class="warning">⚠️ Подписка истекла. Чтобы продолжить пользоваться читом, купите товар в магазине или активируйте лицензионный ключ.</div>';
-            } else subInfo = '<div class="warning">📦 Подписка отсутствует. Для доступа приобретите товар в разделе «Мазагин» и активируйте ключ ниже.</div>';
-            const userId = currentUser.userId || '?';
-            userDiv.innerHTML = `
-                <div class="card product-card" style="transition: transform 0.2s ease, box-shadow 0.2s ease;">
-                    <div class="user-id-block">
-                        <span><strong>👤 Никнейм:</strong> ${escapeHtml(currentUser.login)}</span>
-                        <span class="user-id-number"><strong>🆔 ID:</strong> ${userId}</span>
-                    </div>
-                </div>
-                <div class="card"><h3>Статус подписки</h3>${subInfo}</div>
-                <div class="card"><h3>Активация ключа</h3><div class="inline-flex"><input type="text" id="activationKey" placeholder="Введите лицензионный ключ (например, OS-XXXX-XXXX-XXXX)" style="flex:3"><button id="activateKeyBtn">Активировать ключ</button></div><div id="activationResult"></div></div>
-                <div class="card"><button id="logoutBtn">Выйти</button></div>
-            `;
-            document.getElementById('logoutBtn')?.addEventListener('click', () => logout());
-            document.getElementById('activateKeyBtn')?.addEventListener('click', () => { const key = document.getElementById('activationKey').value.trim(); if(!key) document.getElementById('activationResult').innerHTML = '<div class="warning">Введите ключ</div>'; else activateKey(key); });
-        }
-    }
-    function activateKey(key) {
-        let keys = loadLicenseKeys(), keyData = keys.find(k => k.key === key && !k.used);
-        if (!keyData) { document.getElementById('activationResult').innerHTML = '<div class="warning">Неверный или уже использованный ключ</div>'; return; }
-        let users = loadUsers(), idx = users.findIndex(u => u.login === currentUser.login);
-        if (idx === -1) return;
-        addDaysToSubscription(users[idx], keyData.days);
-        keyData.used = true; keyData.usedBy = currentUser.login; keyData.usedAt = new Date().toISOString();
-        saveLicenseKeys(keys); saveUsers(users);
-        currentUser = users[idx];
-        localStorage.setItem('currentUser', JSON.stringify({ login: currentUser.login, role: currentUser.role, subscription_expiry: currentUser.subscription_expiry, userId: currentUser.userId }));
-        document.getElementById('activationResult').innerHTML = `<div class="success">Ключ активирован! Добавлено ${keyData.days} дней подписки.</div>`;
-        renderCabinet();
-    }
-    function loginUser(login, pass) { let users = loadUsers(), user = users.find(u => u.login === login && u.password === pass); if(user) { currentUser = {...user}; if(!currentUser.purchases) currentUser.purchases = []; localStorage.setItem('currentUser', JSON.stringify({ login: currentUser.login, role: currentUser.role, subscription_expiry: currentUser.subscription_expiry, userId: currentUser.userId })); renderCabinet(); renderTickets(); updateAdminUI(); } else alert("Неверный логин или пароль"); }
-    function registerUser(login, pass) {
-        if(!login.trim()||!pass.trim()){alert("Заполните поля");return;}
-        let users = loadUsers();
-        if(users.find(u=>u.login===login)){alert("Логин занят");return;}
-        let maxId = 0;
-        for(let u of users) if(u.userId && u.userId > maxId) maxId = u.userId;
-        let newId = maxId + 1;
-        users.push({ login, password: pass, purchases: [], role: "user", subscription_expiry: null, userId: newId });
-        saveUsers(users);
-        alert("Регистрация успешна, теперь войдите");
-    }
-    function logout() { currentUser = null; localStorage.removeItem('currentUser'); renderCabinet(); renderTickets(); updateAdminUI(); }
-
-    function renderTickets() {
-        const c = loadContent();
-        document.getElementById('supportTopText').innerHTML = `<div class="card">${escapeHtml(c.supportText)}</div>`;
-        const area = document.getElementById('ticketsArea');
-        if (!currentUser) { area.innerHTML = '<div class="warning">Войдите в аккаунт, чтобы создавать обращения.</div>'; return; }
-        let tickets = loadTickets(), userTickets = tickets.filter(t => t.userLogin === currentUser.login);
-        area.innerHTML = `<div class="card"><h3>Новое обращение</h3><input type="text" id="ticketTitle" placeholder="Тема"><textarea id="ticketMsg" rows="3" placeholder="Сообщение..."></textarea><button id="createTicketBtn">Отправить</button></div><div id="ticketsList"></div>`;
-        document.getElementById('ticketsList').innerHTML = userTickets.length? `<div class="card"><h3>Ваши обращения</h3>${userTickets.map(t=>`<div style="border-bottom:1px solid #333; padding:8px;"><b>${escapeHtml(t.title)}</b> (${t.date})<br>${escapeHtml(t.message)}<br><span style="color:#aaa;">Ответ: ${t.answer||'ожидает'}</span></div>`).join('')}</div>`:'<div class="card">Нет обращений.</div>';
-        document.getElementById('createTicketBtn')?.addEventListener('click', () => { let title=document.getElementById('ticketTitle').value, msg=document.getElementById('ticketMsg').value; if(!title||!msg){alert("Заполните поля");return;} let tickets=loadTickets(); tickets.push({ id:Date.now(), userLogin:currentUser.login, title, message:msg, date:new Date().toLocaleString(), answer:null }); saveTickets(tickets); renderTickets(); });
-        if(currentUser.role==='admin') { area.innerHTML += `<div class="card"><h3>Управление тикетами (админ)</h3><div id="adminTicketsList"></div></div>`; let all=loadTickets(); document.getElementById('adminTicketsList').innerHTML = all.map((t,idx)=>`<div><b>${escapeHtml(t.title)}</b> от ${t.userLogin} (${t.date})<br>${escapeHtml(t.message)}<br><textarea id="ans_${idx}">${t.answer||''}</textarea><button class="answerTicket" data-idx="${idx}">Ответить</button></div>`).join(''); document.querySelectorAll('.answerTicket').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), answer=document.getElementById(`ans_${idx}`).value, tickets=loadTickets(); if(tickets[idx]){ tickets[idx].answer=answer; saveTickets(tickets); renderTickets(); } })); }
-    }
-
+    // === АДМИНКА С АВТОСОХРАНЕНИЕМ ===
     let tempProducts = [];
     function loadTempProducts() { tempProducts = JSON.parse(JSON.stringify(loadProducts())); renderAdminProductsTable(); }
-    function renderAdminProductsTable() { let html='<table style="width:100%"><tr><th>Название</th><th>Цена</th><th>Дни</th><th></th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input id="temp_name_${idx}" value="${escapeHtml(p.name)}"></td><td><input id="temp_price_${idx}" value="${p.price}"></td><td><input id="temp_days_${idx}" value="${p.days}"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'赶</tr>'; document.getElementById('adminProductsList').innerHTML = html; document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ tempProducts.splice(parseInt(btn.dataset.idx),1); renderAdminProductsTable(); })); }
-    function saveAllProducts() { for(let i=0;i<tempProducts.length;i++){ let name=document.getElementById(`temp_name_${i}`)?.value, price=parseInt(document.getElementById(`temp_price_${i}`)?.value), days=parseInt(document.getElementById(`temp_days_${i}`)?.value); if(name && !isNaN(price) && !isNaN(days)){ tempProducts[i].name=name; tempProducts[i].price=price; tempProducts[i].days=days; tempProducts[i].desc=`${name} на ${days===9999?'∞':days+' дн.'}`; } } saveProducts(tempProducts); renderShop(); }
-    function addProduct(n,p,d){ if(!n||isNaN(p)) return false; let newId=tempProducts.length?Math.max(...tempProducts.map(p=>p.id))+1:4; tempProducts.push({ id:newId, name:n, price:parseInt(p), days:parseInt(d), desc:`${n} на ${parseInt(d)===9999?'∞':d+' дн.'}` }); renderAdminProductsTable(); return true; }
-    function renderKeysAdmin() { let keys=loadLicenseKeys(); document.getElementById('keysList').innerHTML = keys.length? keys.map((k,idx)=>`<div class="key-list-item"><code>${escapeHtml(k.key)}</code> — ${k.days} дн. — ${k.used?`Использован ${k.usedBy} ${k.usedAt}`:'Не использован'}<button class="deleteKeyBtn" data-idx="${idx}" style="background:#400;">Удалить</button></div>`).join('') : '<p>Нет сгенерированных ключей</p>'; document.querySelectorAll('.deleteKeyBtn').forEach(btn=>btn.addEventListener('click',()=>{ let keys=loadLicenseKeys(); keys.splice(parseInt(btn.dataset.idx),1); saveLicenseKeys(keys); renderKeysAdmin(); })); }
+    function renderAdminProductsTable() { let html='<table style="width:100%"><tr><th>Название</th><th>Цена</th><th>Дни</th><th>Действие</th></tr>'+tempProducts.map((p,idx)=>`<tr><td><input type="text" class="prod-name-input" data-idx="${idx}" value="${escapeHtml(p.name)}" style="width:100%"></td><td><input type="number" class="prod-price-input" data-idx="${idx}" value="${p.price}" style="width:100%"></td><td><input type="number" class="prod-days-input" data-idx="${idx}" value="${p.days}" style="width:100%"></td><td><button class="removeTempProductBtn" data-idx="${idx}">Удалить</button></td></tr>`).join('')+'</table>'; document.getElementById('adminProductsList').innerHTML=html; // привязываем события автоматического сохранения
+        document.querySelectorAll('.prod-name-input, .prod-price-input, .prod-days-input').forEach(inp=>{ inp.addEventListener('change',function(){ let idx=parseInt(this.dataset.idx); if(!isNaN(idx)){ let name=document.querySelector(`.prod-name-input[data-idx="${idx}"]`).value; let price=parseInt(document.querySelector(`.prod-price-input[data-idx="${idx}"]`).value); let days=parseInt(document.querySelector(`.prod-days-input[data-idx="${idx}"]`).value); if(name && !isNaN(price) && !isNaN(days)){ tempProducts[idx].name=name; tempProducts[idx].price=price; tempProducts[idx].days=days; tempProducts[idx].desc=`${name} на ${days===9999?'∞':days+' дн.'}`; saveProducts(tempProducts); } } }); });
+        document.querySelectorAll('.removeTempProductBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx); tempProducts.splice(idx,1); saveProducts(tempProducts); loadTempProducts(); }));
+    }
+    function addProduct(n,p,d){ if(!n||isNaN(p)) return false; let newId=tempProducts.length?Math.max(...tempProducts.map(p=>p.id))+1:4; tempProducts.push({ id:newId, name:n, price:parseInt(p), days:parseInt(d), desc:`${n} на ${parseInt(d)===9999?'∞':d+' дн.'}` }); saveProducts(tempProducts); loadTempProducts(); return true; }
+
+    function renderKeysAdmin() { let keys=loadLicenseKeys(); document.getElementById('keysList').innerHTML=keys.length? keys.map((k,idx)=>`<div class="key-list-item"><code>${escapeHtml(k.key)}</code> — ${k.days} дн. — ${k.used?`Использован ${k.usedBy} ${k.usedAt}`:'Не использован'}<button class="deleteKeyBtn" data-idx="${idx}" style="background:#400;">Удалить</button></div>`).join(''):'<p>Нет сгенерированных ключей</p>'; document.querySelectorAll('.deleteKeyBtn').forEach(btn=>btn.addEventListener('click',()=>{ let keys=loadLicenseKeys(); keys.splice(parseInt(btn.dataset.idx),1); saveLicenseKeys(keys); renderKeysAdmin(); })); }
     function generateKey(days) { let key='OS-'+Math.random().toString(36).substring(2,6).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase(); let keys=loadLicenseKeys(); keys.push({ key, days, used:false, created:new Date().toISOString() }); saveLicenseKeys(keys); renderKeysAdmin(); return key; }
-    function renderAdminFeatures() { let feats=loadFeatures(); document.getElementById('adminFeaturesList').innerHTML = feats.map((f,idx)=>`<div class="card"><input id="edit_feat_name_${idx}" value="${escapeHtml(f.name)}"><input id="edit_feat_desc_${idx}" value="${escapeHtml(f.desc)}"><button class="saveFeatureBtn" data-idx="${idx}">Сохранить</button><button class="delFeatureBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveFeatureBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), feats=loadFeatures(); feats[idx].name=document.getElementById(`edit_feat_name_${idx}`).value; feats[idx].desc=document.getElementById(`edit_feat_desc_${idx}`).value; saveFeatures(feats); renderAdminFeatures(); renderMain(); })); document.querySelectorAll('.delFeatureBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), feats=loadFeatures(); feats.splice(idx,1); saveFeatures(feats); renderAdminFeatures(); renderMain(); })); }
-    function renderPaymentMethodsAdmin() { let methods=loadPaymentMethods(); document.getElementById('paymentMethodsList').innerHTML = methods.map((m,idx)=>`<div class="payment-method-item">${m.icon?`<img src="${escapeHtml(m.icon)}">`:'💰'}<div class="info"><b>${escapeHtml(m.name)}</b><br><small>${escapeHtml(m.link)}</small></div><button class="delPaymentBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.delPaymentBtn').forEach(btn=>btn.addEventListener('click',()=>{ let methods=loadPaymentMethods(); methods.splice(parseInt(btn.dataset.idx),1); savePaymentMethods(methods); renderPaymentMethodsAdmin(); })); }
+    function renderAdminFeatures() { let feats=loadFeatures(); document.getElementById('adminFeaturesList').innerHTML=feats.map((f,idx)=>`<div class="card"><input type="text" id="edit_feat_name_${idx}" value="${escapeHtml(f.name)}"><input type="text" id="edit_feat_desc_${idx}" value="${escapeHtml(f.desc)}"><button class="saveFeatureBtn" data-idx="${idx}">Сохранить</button><button class="delFeatureBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveFeatureBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), feats=loadFeatures(); feats[idx].name=document.getElementById(`edit_feat_name_${idx}`).value; feats[idx].desc=document.getElementById(`edit_feat_desc_${idx}`).value; saveFeatures(feats); renderAdminFeatures(); renderMain(); })); document.querySelectorAll('.delFeatureBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), feats=loadFeatures(); feats.splice(idx,1); saveFeatures(feats); renderAdminFeatures(); renderMain(); })); }
+    function renderPaymentMethodsAdmin() { let methods=loadPaymentMethods(); document.getElementById('paymentMethodsList').innerHTML=methods.map((m,idx)=>`<div class="payment-method-item">${m.icon?`<img src="${escapeHtml(m.icon)}">`:'💰'}<div class="info"><b>${escapeHtml(m.name)}</b><br><small>${escapeHtml(m.link)}</small></div><button class="delPaymentBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.delPaymentBtn').forEach(btn=>btn.addEventListener('click',()=>{ let methods=loadPaymentMethods(); methods.splice(parseInt(btn.dataset.idx),1); savePaymentMethods(methods); renderPaymentMethodsAdmin(); })); }
     function addPaymentMethod(name,link,icon){ if(!name.trim()||!link.trim()) return false; let methods=loadPaymentMethods(); methods.push({ id:'pm'+Date.now(), name:name.trim(), link:link.trim(), icon:icon||null }); savePaymentMethods(methods); renderPaymentMethodsAdmin(); return true; }
     function setupImageUpload() { let dz=document.getElementById('dropzone'), fi=document.getElementById('fileInput'), prev=document.getElementById('previewImg'); if(!dz) return; dz.onclick=()=>fi.click(); dz.ondragover=e=>{e.preventDefault(); dz.classList.add('drag-over');}; dz.ondragleave=()=>dz.classList.remove('drag-over'); dz.ondrop=e=>{e.preventDefault(); dz.classList.remove('drag-over'); let file=e.dataTransfer.files[0]; if(file && file.type.startsWith('image/')) handleImageFile(file,prev);}; fi.onchange=e=>{if(e.target.files[0]) handleImageFile(e.target.files[0],prev);}; }
     function handleImageFile(file,prev){ let reader=new FileReader(); reader.onload=function(ev){ newPaymentIconBase64=ev.target.result; prev.src=ev.target.result; prev.style.display='block'; }; reader.readAsDataURL(file); }
-    function renderCustomLinksAdmin() { let links=loadLinks(); document.getElementById('customLinksAdmin').innerHTML = links.map((link,idx)=>`<div class="inline-flex"><input id="edit_link_text_${idx}" value="${escapeHtml(link.text)}"><input id="edit_link_url_${idx}" value="${escapeHtml(link.url)}"><button class="saveLinkBtn" data-idx="${idx}">Сохранить</button><button class="delLinkBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveLinkBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), links=loadLinks(); links[idx].text=document.getElementById(`edit_link_text_${idx}`).value; links[idx].url=document.getElementById(`edit_link_url_${idx}`).value; saveLinks(links); renderCustomLinksAdmin(); renderSidebarLinks(); })); document.querySelectorAll('.delLinkBtn').forEach(btn=>btn.addEventListener('click',()=>{ let links=loadLinks(); links.splice(parseInt(btn.dataset.idx),1); saveLinks(links); renderCustomLinksAdmin(); renderSidebarLinks(); })); }
-    function renderSidebarLinks() { let links=loadLinks(); document.getElementById('customLinksContainer').innerHTML = links.map(link=>`<a href="#" class="custom-link" data-url="${escapeHtml(link.url)}">${escapeHtml(link.text)}</a>`).join(''); document.querySelectorAll('.custom-link').forEach(a=>a.addEventListener('click',e=>{e.preventDefault(); window.open(a.dataset.url,'_blank');})); }
-    function renderAdminsPanel() {
-        const adminsList = loadAdminList();
-        const users = loadUsers();
-        const container = document.getElementById('adminsListContainer');
-        if (!container) return;
-        if (adminsList.length === 0) { container.innerHTML = '<div class="card">Нет администраторов</div>'; return; }
-        let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
-        for (let adminId of adminsList) {
-            const user = users.find(u => u.userId === adminId);
-            const name = user ? user.login : `Неизвестный пользователь (ID ${adminId})`;
-            html += `<div class="card admin-card"><div><strong>👑 Администратор</strong><br><span>👤 Логин: ${escapeHtml(name)}</span><br><span>🆔 ID: ${adminId}</span></div>${adminId !== 1 ? `<button class="removeAdminBtn" data-id="${adminId}" style="background:#400;">Удалить</button>` : '<span style="color:#888;">Главный администратор (нельзя удалить)</span>'}</div>`;
-        }
-        html += '</div>';
-        container.innerHTML = html;
-        document.querySelectorAll('.removeAdminBtn').forEach(btn => btn.addEventListener('click', (e) => { const id = parseInt(btn.dataset.id); let admins = loadAdminList(); admins = admins.filter(aid => aid !== id); saveAdminList(admins); syncUserRoles(); renderAdminsPanel(); updateAdminUI(); }));
-    }
-    function addAdminById(userId) {
-        const users = loadUsers();
-        const userExists = users.some(u => u.userId === userId);
-        if (!userExists) { alert(`Пользователь с ID ${userId} не найден.`); return false; }
-        let admins = loadAdminList();
-        if (admins.includes(userId)) { alert(`Пользователь с ID ${userId} уже является администратором.`); return false; }
-        admins.push(userId);
-        saveAdminList(admins);
-        syncUserRoles();
-        renderAdminsPanel();
-        updateAdminUI();
-        alert(`Пользователь с ID ${userId} добавлен в администраторы.`);
-        return true;
-    }
+    function renderCustomLinksAdmin() { let links=loadLinks(); document.getElementById('customLinksAdmin').innerHTML=links.map((link,idx)=>`<div class="inline-flex"><input id="edit_link_text_${idx}" value="${escapeHtml(link.text)}"><input id="edit_link_url_${idx}" value="${escapeHtml(link.url)}"><button class="saveLinkBtn" data-idx="${idx}">Сохранить</button><button class="delLinkBtn" data-idx="${idx}">Удалить</button></div>`).join(''); document.querySelectorAll('.saveLinkBtn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), links=loadLinks(); links[idx].text=document.getElementById(`edit_link_text_${idx}`).value; links[idx].url=document.getElementById(`edit_link_url_${idx}`).value; saveLinks(links); renderCustomLinksAdmin(); renderSidebarLinks(); })); document.querySelectorAll('.delLinkBtn').forEach(btn=>btn.addEventListener('click',()=>{ let links=loadLinks(); links.splice(parseInt(btn.dataset.idx),1); saveLinks(links); renderCustomLinksAdmin(); renderSidebarLinks(); })); }
+    function renderSidebarLinks() { let links=loadLinks(); document.getElementById('customLinksContainer').innerHTML=links.map(link=>`<a href="#" class="custom-link" data-url="${escapeHtml(link.url)}">${escapeHtml(link.text)}</a>`).join(''); document.querySelectorAll('.custom-link').forEach(a=>a.addEventListener('click',e=>{e.preventDefault(); window.open(a.dataset.url,'_blank');})); }
+    function renderAdminsPanel() { let adminsList=loadAdminList(), users=loadUsers(); let container=document.getElementById('adminsListContainer'); if(!container) return; if(adminsList.length===0){ container.innerHTML='<div class="card">Нет администраторов</div>'; return; } let html='<div style="display: flex; flex-direction: column; gap: 10px;">'; for(let adminId of adminsList){ let user=users.find(u=>u.userId===adminId); let name=user?user.login:`Неизвестный пользователь (ID ${adminId})`; html+=`<div class="card admin-card"><div><strong>👑 Администратор</strong><br><span>👤 Логин: ${escapeHtml(name)}</span><br><span>🆔 ID: ${adminId}</span></div>${adminId!==1?`<button class="removeAdminBtn" data-id="${adminId}" style="background:#400;">Удалить</button>`:'<span style="color:#888;">Главный администратор (нельзя удалить)</span>'}</div>`; } html+='</div>'; container.innerHTML=html; document.querySelectorAll('.removeAdminBtn').forEach(btn=>btn.addEventListener('click',()=>{ let id=parseInt(btn.dataset.id); let admins=loadAdminList(); admins=admins.filter(aid=>aid!==id); saveAdminList(admins); renderAdminsPanel(); updateAdminUI(); })); }
+    function addAdminById(userId) { let users=loadUsers(); if(!users.some(u=>u.userId===userId)){ alert(`Пользователь с ID ${userId} не найден.`); return false; } let admins=loadAdminList(); if(admins.includes(userId)){ alert(`Пользователь с ID ${userId} уже является администратором.`); return false; } admins.push(userId); saveAdminList(admins); renderAdminsPanel(); updateAdminUI(); alert(`Пользователь с ID ${userId} добавлен в администраторы.`); return true; }
 
-    function updateAdminUI() {
-        let elems = document.querySelectorAll('.admin-only');
-        if (currentUser && currentUser.role === 'admin') {
-            elems.forEach(el => el.style.display = 'block');
-            loadTempProducts();
-            renderAdminFeatures();
-            renderPaymentMethodsAdmin();
-            renderCustomLinksAdmin();
-            renderSidebarLinks();
-            renderKeysAdmin();
-            renderAdminsPanel();
-            let c = loadContent();
-            document.getElementById('editMainText').value = c.mainText;
-            document.getElementById('editShopText').value = c.shopText;
-            document.getElementById('editSupportText').value = c.supportText;
-            document.getElementById('editDownloadUrl').value = c.downloadUrl;
-            document.getElementById('editDownloadLabel').value = c.downloadLabel;
-        } else {
-            elems.forEach(el => el.style.display = 'none');
-        }
-    }
+    function updateAdminUI() { let elems=document.querySelectorAll('.admin-only'); if(currentUser && currentUser.role==='admin'){ elems.forEach(el=>el.style.display='block'); loadTempProducts(); renderAdminFeatures(); renderPaymentMethodsAdmin(); renderCustomLinksAdmin(); renderSidebarLinks(); renderKeysAdmin(); renderAdminsPanel(); let c=loadContent(); document.getElementById('editMainText').value=c.mainText; document.getElementById('editShopText').value=c.shopText; document.getElementById('editSupportText').value=c.supportText; document.getElementById('editDownloadUrl').value=c.downloadUrl; document.getElementById('editDownloadLabel').value=c.downloadLabel; // автоматическое сохранение текстов
+        document.getElementById('editMainText').addEventListener('input',()=>{ let newC=loadContent(); newC.mainText=document.getElementById('editMainText').value; saveContent(newC); });
+        document.getElementById('editShopText').addEventListener('input',()=>{ let newC=loadContent(); newC.shopText=document.getElementById('editShopText').value; saveContent(newC); });
+        document.getElementById('editSupportText').addEventListener('input',()=>{ let newC=loadContent(); newC.supportText=document.getElementById('editSupportText').value; saveContent(newC); });
+        document.getElementById('editDownloadUrl').addEventListener('input',()=>{ let newC=loadContent(); newC.downloadUrl=document.getElementById('editDownloadUrl').value; saveContent(newC); });
+        document.getElementById('editDownloadLabel').addEventListener('input',()=>{ let newC=loadContent(); newC.downloadLabel=document.getElementById('editDownloadLabel').value; saveContent(newC); });
+    } else { elems.forEach(el=>el.style.display='none'); } }
 
-    function saveContentSettings() { let newC={ mainText:document.getElementById('editMainText').value, shopText:document.getElementById('editShopText').value, supportText:document.getElementById('editSupportText').value, downloadUrl:document.getElementById('editDownloadUrl').value, downloadLabel:document.getElementById('editDownloadLabel').value }; saveContent(newC); renderMain(); renderShop(); renderTickets(); }
-    function resetAllData() {
-        if (confirm("⚠️ ВНИМАНИЕ! Это удалит все товары, блоки функций, способы оплаты, тексты и ключи. Аккаунт администратора kemeithars останется. Продолжить?")) {
-            const usersBackup = localStorage.getItem('users');
-            const adminListBackup = localStorage.getItem('adminList');
-            localStorage.clear();
-            localStorage.setItem('users', usersBackup);
-            localStorage.setItem('adminList', adminListBackup);
-            localStorage.setItem('licenseKeys', JSON.stringify([]));
-            localStorage.setItem('tickets', JSON.stringify([]));
-            localStorage.setItem('products', JSON.stringify([
-                { id:1, name:"OS Client PRO", price:499, days:30, desc:"Aimbot+ESP+Wallhack на 30 дней" },
-                { id:2, name:"OS Client PREMIUM", price:1999, days:9999, desc:"Все функции + обновления навсегда" },
-                { id:3, name:"Инжектор + Байпас", price:799, days:365, desc:"Обход античитов на год" }
-            ]));
-            localStorage.setItem('contentSettings', JSON.stringify({
-                mainText: "Добро пожаловать в OS Client. Полный контроль над играми.",
-                shopText: "Выберите подходящую подписку или приобретите читы навсегда.",
-                supportText: "Создайте обращение, администратор ответит в ближайшее время.",
-                downloadUrl: "#",
-                downloadLabel: "Скачать OS loader"
-            }));
-            localStorage.setItem('featureBlocks', JSON.stringify([]));
-            localStorage.setItem('customLinks', JSON.stringify([]));
-            localStorage.setItem('paymentMethods', JSON.stringify([
-                { id:"pm1", name:"Банковская карта", link:"https://example.com/pay/card", icon:null },
-                { id:"pm2", name:"Криптовалюта USDT", link:"https://example.com/pay/crypto", icon:null },
-                { id:"pm3", name:"Qiwi / ЮMoney", link:"https://example.com/pay/qiwi", icon:null }
-            ]));
-            location.reload();
-        }
-    }
+    function resetAllData() { if(confirm("⚠️ Удалить все данные? Аккаунт kemeithars останется.")){ let usersBackup=localStorage.getItem('users'); let adminListBackup=localStorage.getItem('adminList'); localStorage.clear(); localStorage.setItem('users',usersBackup); localStorage.setItem('adminList',adminListBackup); localStorage.setItem('licenseKeys',JSON.stringify([])); localStorage.setItem('tickets',JSON.stringify([])); localStorage.setItem('products',JSON.stringify([{id:1,name:"OS Client PRO",price:499,days:30,desc:"Aimbot+ESP+Wallhack на 30 дней"},{id:2,name:"OS Client PREMIUM",price:1999,days:9999,desc:"Все функции + обновления навсегда"},{id:3,name:"Инжектор + Байпас",price:799,days:365,desc:"Обход античитов на год"}])); localStorage.setItem('contentSettings',JSON.stringify({mainText:"Добро пожаловать в OS Client. Полный контроль над играми.",shopText:"Выберите подходящую подписку или приобретите читы навсегда.",supportText:"Создайте обращение, администратор ответит в ближайшее время.",downloadUrl:"#",downloadLabel:"Скачать OS loader"})); localStorage.setItem('featureBlocks',JSON.stringify([])); localStorage.setItem('customLinks',JSON.stringify([])); localStorage.setItem('paymentMethods',JSON.stringify([{id:"pm1",name:"Банковская карта",link:"https://example.com/pay/card",icon:null},{id:"pm2",name:"Криптовалюта USDT",link:"https://example.com/pay/crypto",icon:null},{id:"pm3",name:"Qiwi / ЮMoney",link:"https://example.com/pay/qiwi",icon:null}])); location.reload(); } }
+
+    function exportData() { let data={ users:localStorage.getItem('users'), adminList:localStorage.getItem('adminList'), products:localStorage.getItem('products'), contentSettings:localStorage.getItem('contentSettings'), featureBlocks:localStorage.getItem('featureBlocks'), customLinks:localStorage.getItem('customLinks'), paymentMethods:localStorage.getItem('paymentMethods'), licenseKeys:localStorage.getItem('licenseKeys'), tickets:localStorage.getItem('tickets') }; let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="osclient_backup.json"; a.click(); URL.revokeObjectURL(a.href); }
+    function importData(file) { let reader=new FileReader(); reader.onload=function(e){ try{ let data=JSON.parse(e.target.result); for(let key in data) if(data[key]!==undefined) localStorage.setItem(key,data[key]); document.getElementById('importResult').innerHTML='<div class="success">Импорт успешен. Перезагрузите страницу.</div>'; setTimeout(()=>location.reload(),1500); } catch(err){ document.getElementById('importResult').innerHTML='<div class="warning">Ошибка импорта: неверный файл</div>'; } }; reader.readAsText(file); }
 
     function loadSession() { let saved=localStorage.getItem('currentUser'); if(saved){ try{ let parsed=JSON.parse(saved), users=loadUsers(), fresh=users.find(u=>u.login===parsed.login); if(fresh) currentUser=fresh; renderCabinet(); renderTickets(); updateAdminUI(); }catch(e){} } else renderCabinet(); renderMain(); renderShop(); renderTickets(); renderSidebarLinks(); }
     function escapeHtml(str){ return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
+    // Навигация
     document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{ let page=btn.dataset.page; document.querySelectorAll('.page-content').forEach(p=>p.style.display='none'); document.getElementById(`${page}Page`).style.display='block'; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(page==='admin'){ document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById('admintab-products').classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); document.querySelector('.admin-tab-btn[data-admintab="products"]').classList.add('active'); loadTempProducts(); renderAdminFeatures(); renderPaymentMethodsAdmin(); renderCustomLinksAdmin(); renderKeysAdmin(); renderAdminsPanel(); setupImageUpload(); } if(page==='shop') renderShop(); if(page==='support') renderTickets(); if(page==='cabinet') renderCabinet(); }));
-    document.querySelectorAll('.admin-tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ let tab=btn.dataset.admintab; document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById(`admintab-${tab}`).classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); btn.classList.add('active'); if(tab==='products') loadTempProducts(); if(tab==='features') renderAdminFeatures(); if(tab==='payment'){ renderPaymentMethodsAdmin(); setupImageUpload(); } if(tab==='links') renderCustomLinksAdmin(); if(tab==='keys') renderKeysAdmin(); if(tab==='admins') renderAdminsPanel(); if(tab==='reset') {} }));
+    document.querySelectorAll('.admin-tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ let tab=btn.dataset.admintab; document.querySelectorAll('.admin-tab-content').forEach(tc=>tc.classList.remove('active')); document.getElementById(`admintab-${tab}`).classList.add('active'); document.querySelectorAll('.admin-tab-btn').forEach(tb=>tb.classList.remove('active')); btn.classList.add('active'); if(tab==='products') loadTempProducts(); if(tab==='features') renderAdminFeatures(); if(tab==='payment'){ renderPaymentMethodsAdmin(); setupImageUpload(); } if(tab==='links') renderCustomLinksAdmin(); if(tab==='keys') renderKeysAdmin(); if(tab==='admins') renderAdminsPanel(); if(tab==='export'){} }));
     document.getElementById('gotoShopFromMain')?.addEventListener('click',()=>{ document.querySelector('.nav-btn[data-page="shop"]').click(); });
     document.getElementById('addProductBtn')?.addEventListener('click',()=>{ let n=document.getElementById('newProdName').value, p=document.getElementById('newProdPrice').value, d=document.getElementById('newProdDays').value; if(addProduct(n,p,d)){ document.getElementById('newProdName').value=''; document.getElementById('newProdPrice').value=''; document.getElementById('newProdDays').value='30'; } else alert("Введите название и цену"); });
-    document.getElementById('saveAllProductsBtn')?.addEventListener('click',saveAllProducts);
     document.getElementById('addFeatureBtn')?.addEventListener('click',()=>{ let name=document.getElementById('newFeatureName').value, desc=document.getElementById('newFeatureDesc').value; if(!name) return; let feats=loadFeatures(); feats.push({ id:Date.now().toString(), name, desc }); saveFeatures(feats); renderAdminFeatures(); renderMain(); document.getElementById('newFeatureName').value=''; document.getElementById('newFeatureDesc').value=''; });
     document.getElementById('addPaymentBtn')?.addEventListener('click',()=>{ let name=document.getElementById('newPaymentName').value, link=document.getElementById('newPaymentLink').value; if(addPaymentMethod(name,link,newPaymentIconBase64)){ document.getElementById('newPaymentName').value=''; document.getElementById('newPaymentLink').value=''; newPaymentIconBase64=null; let prev=document.getElementById('previewImg'); prev.style.display='none'; prev.src=''; } else alert("Введите название и ссылку"); });
     document.getElementById('addCustomLinkBtn')?.addEventListener('click',()=>{ let text=document.getElementById('newLinkText').value, url=document.getElementById('newLinkUrl').value; if(!text||!url) return; let links=loadLinks(); links.push({ text, url }); saveLinks(links); renderCustomLinksAdmin(); renderSidebarLinks(); document.getElementById('newLinkText').value=''; document.getElementById('newLinkUrl').value=''; });
-    document.getElementById('saveContentBtn')?.addEventListener('click',saveContentSettings);
     document.getElementById('closeModalBtn')?.addEventListener('click',closeModal);
-    window.onclick = (e) => { if(e.target===document.getElementById('paymentModal')) closeModal(); };
+    window.onclick=(e)=>{ if(e.target===document.getElementById('paymentModal')) closeModal(); };
     document.getElementById('generateKeyBtn')?.addEventListener('click',()=>{ let days=parseInt(document.getElementById('keyDays').value); if(isNaN(days)||days<1){ alert("Введите корректное количество дней"); return; } let newKey=generateKey(days); let disp=document.getElementById('generatedKeyDisplay'); disp.innerHTML=`Сгенерирован ключ: <strong>${newKey}</strong> на ${days} дней`; disp.style.display='block'; setTimeout(()=>disp.style.display='none',5000); });
-    document.getElementById('addAdminBtn')?.addEventListener('click', () => { const idInput = document.getElementById('newAdminId'); const userId = parseInt(idInput.value); if (isNaN(userId)) { alert("Введите числовой ID"); return; } addAdminById(userId); idInput.value = ''; });
-    document.getElementById('resetAllDataBtn')?.addEventListener('click', resetAllData);
+    document.getElementById('addAdminBtn')?.addEventListener('click',()=>{ let idInput=document.getElementById('newAdminId'); let userId=parseInt(idInput.value); if(isNaN(userId)){ alert("Введите числовой ID"); return; } addAdminById(userId); idInput.value=''; });
+    document.getElementById('resetAllDataBtn')?.addEventListener('click',resetAllData);
+    document.getElementById('exportDataBtn')?.addEventListener('click',exportData);
+    document.getElementById('importDataBtn')?.addEventListener('click',()=>{ let fileInput=document.getElementById('importFileInput'); if(fileInput.files.length===0){ document.getElementById('importResult').innerHTML='<div class="warning">Выберите файл</div>'; return; } importData(fileInput.files[0]); });
     loadSession(); setupImageUpload();
 </script>
 </body>
